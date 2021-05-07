@@ -2,8 +2,8 @@
   <div class="register">
     <h1>BUPT二手车交易平台注册</h1>
     <el-form label-width="80px" :model="registerData">
-      <el-form-item label="账号">
-        <el-input placeholder="请输入账号" v-model="registerData.userName"></el-input>
+      <el-form-item label="用户名">
+        <el-input placeholder="请输入用户名" v-model="registerData.userName"></el-input>
       </el-form-item>
       <el-form-item label="密码">
         <el-input placeholder="请输入密码" v-model="registerData.userPassword" show-password></el-input>
@@ -30,7 +30,7 @@
 import { reactive, ref} from 'vue'
 import {ElMessage} from "element-plus";
 import {register} from "../http/api";
-import router from "../router";             //用于设置响应式数据
+import router from "../router/index.js";             //用于设置响应式数据
 
 export default {
   name: 'Register',
@@ -49,13 +49,19 @@ export default {
       let numRe = new RegExp(numReg)
       //判断账号为空或者密码为空的情况
       if(!registerData.userName || !registerData.userPassword || !confirmPassword.value){
-        ElMessage.error('账号或者密码不能为空！');
+        ElMessage.error('用户名或者密码不能为空！');
+      }
+      else if(registerData.userPassword.length < 6){
+        ElMessage.error('密码不能小于6位！');
       }
       else if(!registerData.userTelnum){
         ElMessage.error('手机号不能为空！');
       }
       else if (!numRe.test(registerData.userTelnum)) {
         ElMessage.error('手机号不能含有除数字以外的字符！');
+      }
+      else if(registerData.userTelnum.length != 11 && registerData.userTelnum.length != 8){
+        ElMessage.error('请输入正确的手机号码！');
       }
       else if(registerData.userPassword != confirmPassword.value){
         ElMessage.error('两次输入的密码不相等！');
@@ -64,10 +70,14 @@ export default {
       register(registerData).then(res=>{
         //跳转到买车界面等
         if(res == true){
-          router.push('/Home')
+          ElMessage.success({
+            message: '注册成功！',
+            type: 'success'
+          });
+          router.push('/')
         }
         else{
-          ElMessage.error('账号或者密码错误！');
+          ElMessage.error('手机号已被注册！');
         }
       })
     }

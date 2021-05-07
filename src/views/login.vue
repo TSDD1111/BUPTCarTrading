@@ -13,6 +13,9 @@
         <el-button @click="subFun" class="sub-btn" round="true" type="primary">登录</el-button>
       </el-form-item>
       <el-form-item>
+        <el-button @click="changePassFun" class="re-btn" round="true" type="primary">忘记密码</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button @click="changeRegFun" class="re-btn" round="true" type="primary">没有账号，前往注册</el-button>
       </el-form-item>
     </el-form>
@@ -38,8 +41,7 @@ export  default {
     let subFun=()=>{
       //判断账号为空或者密码为空的情况
       if(!loginData.userTelnum || !loginData.userPassword){
-        ElMessage.error('账号或者密码不能为空！');
-        return
+        ElMessage.error('手机号或者密码不能为空！');
       }
       //执行登录操作，发送信息给后端
       login(loginData).then(res=>{
@@ -48,10 +50,15 @@ export  default {
           router.push('/Home')
         }
         else{
-          ElMessage.error('账号或者密码错误！');
-          return
+          ElMessage.error('手机号或者密码错误！');
         }
       })
+    }
+    //点击忘记密码界面
+    let changePassFun=()=>{
+      //打开一个新窗口
+      let ret = router.resolve('/ret');
+      window.open(ret.href);
     }
     //点击注册界面
     let changeRegFun=()=>{
@@ -61,6 +68,7 @@ export  default {
     return{
       loginData,
       subFun,
+      changePassFun,
       changeRegFun
     }
   }

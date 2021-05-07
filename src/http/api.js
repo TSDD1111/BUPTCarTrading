@@ -9,3 +9,10 @@ export const login=(data)=>{
 export const register=(data)=>{
     return $http.post('http://10.128.255.148:8080//car/user/register', data)
 }
+// 用于重置密码的函数
+export const setPassword=(data)=>{
+    return $http.get(`http://10.128.255.148:8080//car/user/forget/${data}`)
+}
+export const resetPass=(data)=>{
+    return $http.post(`http://10.128.255.148:8080//car/user/reSetPassword`, data)
+}
