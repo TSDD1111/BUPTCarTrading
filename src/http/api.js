@@ -16,3 +16,7 @@ export const setPassword=(data)=>{
 export const resetPass=(data)=>{
     return $http.post(`http://10.128.255.148:8080//car/user/reSetPassword`, data)
 }
+// 请求carinfo
+export const getCarInfo=(id)=>{
+    return $http.get(`http://10.128.255.148:8080//car/user/car/trading/getCar/${id}`)
+}
