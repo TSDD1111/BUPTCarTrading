@@ -20,3 +20,7 @@ export const resetPass=(data)=>{
 export const send=(data)=>{
     return $http.get(`http://10.128.194.172:8001//car/user/send/${data}`)
 }
+// 请求carinfo
+export const getCarInfo=(id)=>{
+    return $http.get(`http://10.128.255.148:8080//car/user/car/trading/getCar/${id}`)
+}
