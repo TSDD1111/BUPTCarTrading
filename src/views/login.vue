@@ -42,12 +42,13 @@ export  default {
       //判断账号为空或者密码为空的情况
       if(!loginData.userTelnum || !loginData.userPassword){
         ElMessage.error('手机号或者密码不能为空！');
+        return;
       }
       //执行登录操作，发送信息给后端
       login(loginData).then(res=>{
         //跳转到买车界面等
         if(res == true){
-          router.push('/Home')
+          router.push(router.options.routes[0].children[0])
         }
         else{
           ElMessage.error('手机号或者密码错误！');
@@ -57,7 +58,7 @@ export  default {
     //点击忘记密码界面
     let changePassFun=()=>{
       //打开一个新窗口
-      let ret = router.resolve('/ret');
+      let ret = router.resolve('/reset');
       window.open(ret.href);
     }
     //点击注册界面
@@ -75,7 +76,7 @@ export  default {
 }
 </script>
 <!--该页面颜色等格式设置-->
-<style>
+<style lang="scss">
 /*设置login的布局*/
 .login{
   width: 500px;

@@ -6,7 +6,19 @@ const routes = [
   {
     path: '/Home',
     name: 'Home',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: '/buy',
+        name: 'Buy',
+        component: () => import(/* webpackChunkName: "login" */ '../views/buyCars.vue')
+      },
+      {
+        path: '/sell',
+        name: 'Sell',
+        component: () => import(/* webpackChunkName: "login" */ '../views/sellCars.vue')
+      },
+    ]
   },
   {
     path: '/',
@@ -19,12 +31,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "login" */ '../views/register.vue')
   },
   {
-    path: '/setPassword',
+    path: '/set',
     name: 'SetPassword',
     component: () => import(/* webpackChunkName: "login" */ '../views/setPassword.vue')
   },
   {
-    path: '/ret',
+    path: '/reset',
     name: 'Retrieve',
     component: () => import(/* webpackChunkName: "login" */ '../views/retrieve.vue')
   }
