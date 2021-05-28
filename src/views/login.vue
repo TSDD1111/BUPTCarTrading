@@ -48,7 +48,7 @@ export  default {
       login(loginData).then(res=>{
         //跳转到买车界面等
         if(res == true){
-          router.push(router.options.routes[0].children[0])
+          router.push({name: 'Buy', params:{sort: 1}})
         }
         else{
           ElMessage.error('手机号或者密码错误！');

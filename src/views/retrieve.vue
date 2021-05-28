@@ -25,7 +25,7 @@ import {send, setPassword} from "../http/api";
 import router from "../router/index.js";
 
 export default {
-  name: 'Register',
+  name: 'Retrieve',
   setup(){
     //登录的数据：账号和密码
     let setData = reactive({

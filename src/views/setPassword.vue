@@ -23,7 +23,7 @@ import { ElMessage } from 'element-plus'   //Element中用于实现消息提示
 import { resetPass } from '../http/api.js'     //api中封装的登录判断，传递给后端
 import router from '../router/index.js'    //用于页面跳转
 export  default {
-  name:'Login',
+  name:'SetPassword',
   //启动时使用
   setup(){
     //登录的数据：账号和密码
@@ -48,7 +48,7 @@ export  default {
         ElMessage.error('两次输入密码不相等！');
         return;
       }
-      //执行登录操作，发送信息给后端
+      //执行发送重置消息给后端
       resetPass(resetData).then(res=>{
         //跳转到买车界面等
         if(res == true){
@@ -56,7 +56,7 @@ export  default {
             message: '重置密码成功！',
             type: 'success'
           });
-          router.push('/')
+          router.push('/login')
         }
         else{
           ElMessage.error('密码重置失败！');

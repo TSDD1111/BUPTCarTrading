@@ -136,7 +136,7 @@ export default {
     }
     //切换到登录界面
     let changeLoginFun=()=>{
-      router.push('/')
+      router.push('/login')
     }
     return {
       registerData,
