@@ -24,3 +24,6 @@ export const send=(data)=>{
 export const getCarInfo=(id)=>{
     return $http.get(`http://10.128.255.148:8080//car/user/car/trading/getCar/${id}`)
 }
+export const getCarComment=(data)=>{
+    return $http.post(`http://10.28.208.233:8001//car/trading/commentByRecord`,data)
+}
