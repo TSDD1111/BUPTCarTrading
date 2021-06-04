@@ -24,3 +24,15 @@ export const send=(data)=>{
 export const getCarInfo=(id)=>{
     return $http.get(`http://10.128.255.148:8080//car/user/car/trading/getCar/${id}`)
 }
+//请求车品牌
+export const getCarBrand=()=>{
+    return $http.get('http://10.28.208.233:8060/car/type/allbrand')
+}
+//请求对应品牌的车种类
+export const getCarSort=(brand)=>{
+    return $http.get(`http://10.28.208.233:8060/car/type/series/${brand}`)
+}
+//根据搜索获取车的信息
+export const getSearchCar=(data, pageCount, pageSize)=>{
+    return $http.post(`http://10.28.208.233:8001/car/trading/pageCars/${pageCount}/${pageSize}`, data)
+}

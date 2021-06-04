@@ -40,6 +40,7 @@ import router from "../router/index.js"
 export default {
   name: 'Home',
   setup(){
+    //判断用户是否登录
     let sort = ref(0)
     if(router.currentRoute.value.params.sort){
       sort = router.currentRoute.value.params.sort
