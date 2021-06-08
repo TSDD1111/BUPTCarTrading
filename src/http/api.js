@@ -36,3 +36,9 @@ export const getCarSort=(brand)=>{
 export const getSearchCar=(data, pageCount, pageSize)=>{
     return $http.post(`http://10.28.208.233:8001/car/trading/pageCars/${pageCount}/${pageSize}`, data)
 }
+export const getCarSeries=(id)=>{
+    return $http.get(`http://10.28.208.233:8060//car/type/series/${id}`)
+}
+export const submitOrder=(data)=>{
+    return $http.post(`http://10.28.208.233:8001//car/trading/insertCar`,data)
+}
