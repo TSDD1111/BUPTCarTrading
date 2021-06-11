@@ -77,19 +77,30 @@
       <el-col :span="4"></el-col>
     </el-row>
     <!--车的图片、信息展示-->
-    <el-row :gutter="10" v-for="y in 5" :key="y" class="carMarTop">
-      <el-col :span="2"></el-col>
-      <el-col :span="5" v-for="i in 4" :key="i">
-        <el-card @click="clickCar" :body-style="{ padding: '0px' }" shadow="hover">
-          <img src="../assets/1.jpg" class="picture">
+    <el-row :gutter="10">
+      <el-col :span="6" v-for="(y,index) in 20" :key="y" v-model="carInfo">
+        <el-card @click="clickCar" :body-style="{ padding: '0px' }" shadow="hover" class="carMarTop">
+          <img :src=carInfo.carSrc[index] class="picture">
           <div style="margin-left: 14px">
-            <h3>法拉利</h3>
-            <label>2018年|10公里|到店服务</label>
-            <h4>40万</h4>
+            <h3>{{ carInfo.carName[index] }}</h3>
+            <label>{{carInfo.carTime[index]}}|{{carInfo.carDis[index]}}|{{carInfo.service[index]}}</label>
+            <h4>{{  carInfo.carPrice[index] }}</h4>
           </div>
         </el-card>
       </el-col>
-      <el-col :span="2"></el-col>
+    </el-row>
+    <!--分页-->
+    <el-row :gutter="10" class="carMarTop">
+      <el-col :span="8"></el-col>
+      <el-col :span="8">
+        <el-pagination
+            :page-size="20"
+            :pager-count="11"
+            layout="prev, pager, next"
+            :total="1000">
+        </el-pagination>
+      </el-col>
+      <el-col :span="8"></el-col>
     </el-row>
 
   </div>
@@ -103,21 +114,48 @@ import { getCarBrand,getCarSort } from '../http/api.js'     //获取api
 export default {
   name: 'Buy',
   setup(){
+    let y_Row = [0,1,2,3,4];
+    let x_Col = [0,1,2,3,4];
     let carType = ref('不限')   //车品牌
     let search = ref("")    //搜索栏
     let carBrand = reactive([])  //车品牌数组
     //获取所有的车品牌
     getCarBrand().then(res=>{
-      //通过push能动态改变界面的值
+      //通过push来动态改变界面的值
       carBrand.push(res)
     })
     let carSort = ref('不限')    //对应车品牌的车种类
     let carPrice = ref('first')   //车价格
-    //车种类数组
+    //获取车种类的数组
     let carList = reactive([{}])
     getCarSort("奔驰").then(res=>{
       carList.push(res)
     })
+    //40辆车的信息数组
+    let carInfo = reactive({
+      carName:[],
+      carPrice:[],
+      carTime:[],
+      carDis:[],
+      service:[],
+      carSrc:[],
+    })
+    for(let i = 0; i < 10; i++){
+      carInfo.carName[i] = "法拉利";
+      carInfo.carPrice[i] = "40万";
+      carInfo.carTime[i] = "10年";
+      carInfo.carDis[i] = "20万公里";
+      carInfo.service[i] = "到店服务";
+      carInfo.carSrc[i] = require('../assets/1.jpg');  //通过require解析出真正的路径
+    }
+    for(let i = 10; i < 20; i++){
+      carInfo.carName[i] = "卡丁车";
+      carInfo.carPrice[i] = "400万";
+      carInfo.carTime[i] = "1年";
+      carInfo.carDis[i] = "200万公里";
+      carInfo.service[i] = "到店服务";
+      carInfo.carSrc[i] = require('../assets/1.jpg');
+    }
     //点击搜索按钮
     let searchInfo=()=>{
 
@@ -145,12 +183,15 @@ export default {
       selectBrand,
       selectSort,
       searchInfo,
+      y_Row,
+      x_Col,
       carBrand,
       search,
       carType,
       carSort,
       carPrice,
       carList,
+      carInfo,
     }
   },
 }
