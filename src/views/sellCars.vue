@@ -13,7 +13,7 @@
             <el-option v-for="i in carinfo[0]" :key="i" :label="i.carSeries" :value="i.carSeries" @click="updateForm(i)"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="行驶里程"  :label-width="formLabelWidth" prop="kilometer" :rules="[
+        <el-form-item label="行驶里程(公里)"  :label-width="formLabelWidth" prop="kilometer" :rules="[
       { required: true, message: '里程不能为空'},
       { type: 'number', min:1,max:1000000,message: '里程必须为数字值,且要符合大小'}
     ]">
@@ -26,9 +26,21 @@
           </el-select>
         </el-form-item>
         <el-form-item  :label-width="formLabelWidth">
-          <el-button type="primary" @click="submitForm()">提交</el-button>
+          <el-button type="primary" @click="submitForm()" :loading="submit_button_load">提交</el-button>
         </el-form-item>
       </el-form>
+    </el-dialog>
+    <el-dialog
+        title="提示"
+        v-model="diglogVisible"
+        width="30%"
+        :before-close="handleClose">
+      <span>{{diglogText}}</span>
+      <template #footer>
+    <span class="dialog-footer">
+      <el-button type="primary" @click="diglogVisible = false" >确 定</el-button>
+    </span>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -38,7 +50,7 @@ import axios;
 import {reactive, ref} from "vue";
 import {isNumber} from "element-plus/es/utils/util";
 // eslint-disable-next-line no-unused-vars
-import {getCarBrand,getCarSeries,submitOrder} from "../http/api";
+import {getCarBrand,getCarSeries,insertCar} from "../http/api";
 
 export default {
   name: 'sellcars',
@@ -65,20 +77,28 @@ export default {
       offertype:1,
       prePrice:0
     })
-    console.log(form)
     let carbrands = reactive([])
     let carnames = reactive([])
     let carinfo = reactive([])
-    getCarBrand().then(res=>{
-      for(var i =0;i<res.length;i++){
-        carbrands.push({brand:res[i]})
-      }
-    })
+    let diglogVisible = ref(false)
+    let diglogText = ref(null)
+    let submit_button_load = ref(false)
+
+    getCarBrand().then(
+        res=>{
+          for(var i =0;i<res.length;i++){
+            carbrands.push({brand:res[i]})
+          }
+        })
     function submitForm() {
       if (isNumber(form.kilometer)&&form.brand!=""&&form.notrepaireddamage!=null&&form.name!="") {
-        dialogTableVisible.value = false
-        console.log(form)
-        submitOrder(form)
+        insertCar(form).then(res=>{
+          if(res == "") {
+            dialogTableVisible.value = false
+            diglogVisible.value = true
+            diglogText.value = "提交成功"
+          }
+        })
       }
     }
     function updateForm(i){
@@ -105,6 +125,9 @@ export default {
       submitForm,
       updateForm,
       requestCarSeries,
+      diglogVisible,
+      submit_button_load,
+      diglogText,
     }
   },
 }

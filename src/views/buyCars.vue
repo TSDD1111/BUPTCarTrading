@@ -79,7 +79,7 @@
     <!--车的图片、信息展示-->
     <el-row :gutter="10">
       <el-col :span="6" v-for="(y,index) in 20" :key="y" v-model="carInfo">
-        <el-card @click="clickCar" :body-style="{ padding: '0px' }" shadow="hover" class="carMarTop">
+        <el-card @click="clickCar(carInfo.carId[index])" :body-style="{ padding: '0px' }" shadow="hover" class="carMarTop">
           <img :src=carInfo.carSrc[index] class="picture">
           <div style="margin-left: 14px">
             <h3>{{ carInfo.carName[index] }}</h3>
@@ -140,8 +140,8 @@ export default {
     getCarSort("奔驰").then(res=>{
       carList.push(res)
     })
-    getUserInfo().then(res=>{
-      console.log("user" + res)
+    getUserInfo().then({
+      // console.log(res)
     })
     //20辆车的信息数组
     let carInfo = reactive({
@@ -194,8 +194,8 @@ export default {
 
     }
     //点击某辆车，跳转到对应的车界面
-    let clickCar=()=>{
-      router.push(router.options.routes[0].children[2])
+    let clickCar=(carID)=>{
+      router.push({path: 'carInfo', query:{carId: carID}})
       return
     }
     //改变页码时的变化

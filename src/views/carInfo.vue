@@ -14,7 +14,6 @@
         <h1>
           {{car_information[0].name}}
         </h1>
-
         <el-table
             :data="car_information"
             style="width: 100%">
@@ -37,7 +36,19 @@
               label="价格">
           </el-table-column>
         </el-table>
-        <button class="buycar">我要买车</button>
+        <button class="buycar" @click="buyCar"  >{{text1}}</button>
+        <el-dialog
+            title="提示"
+            v-model="dialog1Visible"
+            width="30%"
+            :before-close="handleClose">
+          <span>{{diglog1Text}}</span>
+          <template #footer>
+    <span class="dialog-footer">
+      <el-button type="primary" @click="dialog1Visible = false">确 定</el-button>
+    </span>
+          </template>
+        </el-dialog>
       </div>
     </div></el-col>
   </el-row>
@@ -98,16 +109,43 @@
       </div>
     </div></el-col>
   </el-row>
+  <el-row>
+    <el-col :span="24"><div class="grid-content bg-purple-dark">
+      <h1 class="baseinfo">
+        写评论
+      </h1>
+    </div></el-col>
+  </el-row>
+  <el-form-item>
+    <el-input
+        type="textarea"
+        :rows="2"
+        placeholder="请输入内容"
+        v-model="input_comment"
+    ></el-input>
+  </el-form-item>
+  <el-button type="success" icon="el-icon-check" circle @click="submitComment" :loading="successbutton" ></el-button>
+  <el-dialog
+      title="提示"
+      v-model="dialog2Visible"
+      width="30%"
+      :before-close="handleClose">
+    <span>{{diglog2Text}}</span>
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button type="primary" @click="dialog2Visible = false">确 定</el-button>
+    </span>
+    </template>
+  </el-dialog>
 </template>
 
 import axios;
 <script>
-
-
 // eslint-disable-next-line no-unused-vars
-import {getCarInfo} from "../http/api";
-import {getCarComment} from "../http/api";
-import {reactive} from "vue";
+import {getCarInfo, submitOrder} from "../http/api";
+import {getCarComment,insertComment,insertOrder} from "../http/api";
+import {ref,reactive} from "vue";
+import router from "../router";
 
 export default {
   name : 'carinfo',
@@ -129,25 +167,45 @@ export default {
       carDescribe:0
     }])
     let carImgs = require("../assets/logo.png")
-
-    let carid = {
-      carId : 7,
-    }
+    let input_comment = ref(null)
+    let text1 = ref("我要买车")
+    let buycar_button = ref(false)
+    let submitcomment_button = ref(false)
+    let carid = router.currentRoute.value.query.carId
+    let userid = 0
     let carcomments  = reactive([])
+    let dialog1Visible = ref(false)
+    let diglog1Text = ref("点击提交评论")
+    let dialog2Visible = ref(false)
+    let diglog2Text = ref("点击提交评论")
+    let successbutton = ref(false)
     //wait response
 
-    getCarInfo(1).then(res=>{
-      document.getElementById("picture").src = res.carImgs[0].carImg
+    getCarInfo(carid).then(res=>{
+      document.getElementById("picture").src = res.carImages[0]
       //carImgs = require(res.carImgs[0].carImg)
       car_information[0].name = res.carInfo.name
       car_information[0].brand = res.carInfo.brand
       car_information[0].prePrice = res.carInfo.prePrice
       car_information[0].kilometer = res.carInfo.kilometer
       car_information[0].power = res.carInfo.power
+      car_information[0].fuelType = res.carInfo.fuelType
       if(res.carInfo.gearbox === 0){
         car_information[0].gearbox = "手动"
       }else{
         car_information[0].gearbox = "自动"
+      }
+      if(res.carInfo.fuelType === 0){
+        car_information[0].fuelType = "汽油"
+      }
+      else if(res.carInfo.fuelType == 1) {
+        car_information[0].fuelType = "柴油"
+      }
+      else if(res.carInfo.fuelType == 2) {
+        car_information[0].fuelType = "电动"
+      }
+      else{
+        car_information[0].fuelType = "混合动力"
       }
       if(res.carInfo.notRepairedDamage === 0){
         car_information[0].notRepairedDamage = "是"
@@ -155,21 +213,84 @@ export default {
         car_information[0].notRepairedDamage = "否"
       }
     })
-    
-    getCarComment(carid).then(res=>{
+    let carComment = {
+      carId:carid
+    }
+    getCarComment(carComment).then(res=>{
       for(var i = 0;i<res.length;i++) {
         var a = i.toString()
         carcomments.push({comment:res[a].commentDetails})
-        console.log(carcomments[i].comment)
       }
     })
+    function submitComment() {
+      if (submitcomment_button.value == false&&input_comment.value!=null) {
+        submitcomment_button.value = true
+        successbutton.value = true
+        let data = {
+          carId: carid,
+          userId: userid,
+          commentDetails: input_comment.value
+        }
+        insertComment(data).then(res => {
+          if(res=="") {
+            diglog2Text.value = "提交成功"
+            dialog2Visible.value = true
+            input_comment.value = null
+            submitcomment_button.value = false
+            successbutton.value = false
+          }else {
+            diglog2Text.value = "提交未成功"
+            dialog2Visible.value = true
+            input_comment.value = null
+            successbutton.value = false
+          }
+        })
+      }
+      else {
+        diglog2Text.value = "评论不能为空"
+        dialog2Visible.value = true
+      }
+
+    }
+    function buyCar(){
+      if(buycar_button.value == false) {
+        let order = {
+          buyerId: userid,
+          carId: carid,
+          sellerId: car_information[0].prePrice,
+          tradePrice: car_information[0].sellerID
+        }
+        text1.value = "提交中"
+        insertOrder(order).then(res =>{
+          if(res == "") {
+            text1.value = "已提交"
+            buycar_button.value = true
+          }else {
+            dialog1Visible.value = true
+            text1.value = "我要买车"
+            diglog1Text.value = "提交失败"
+          }
+        })
+      }
+    }
 
 
     return {
       car_information,
       carImgs,
       carid,
-      carcomments
+      carcomments,
+      input_comment,
+      userid,
+      submitComment,
+      buyCar,
+      text1,
+      buycar_button,
+      dialog1Visible,
+      diglog1Text,
+      dialog2Visible,
+      diglog2Text,
+      successbutton
     }
   },
 }

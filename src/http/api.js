@@ -20,7 +20,7 @@ export const send=(data)=>{
 }
 // 请求carinfo
 export const getCarInfo=(id)=>{
-    return $http.get(`http://8.140.2.249/car/user/car/trading/getCar/${id}`)
+    return $http.get(`http://8.140.2.249/car/trading/getCar/${id}`)
 }
 //请求车品牌
 export const getCarBrand=()=>{
@@ -50,4 +50,16 @@ export const getCarSeries=(id)=>{
 }
 export const submitOrder=(data)=>{
     return $http.post(`http://8.140.2.249/car/trading/insertCar`,data)
+}
+export const insertCar=(data)=>{
+    return $http.post(`http://8.140.2.249/car/trading/insertCar`,data)
+}
+export const insertComment=(data)=>{
+    return $http.post(`http://8.140.2.249/car/trading/insertComment`,data)
+}
+export const insertOrder=(data)=>{
+    return $http.post(`http://8.140.2.249/car/order/insertorder`,data)
+}
+export const getCarComment=(data)=>{
+    return $http.post(`http://8.140.2.249/car/trading/commentByRecord`,data)
 }

@@ -7,7 +7,7 @@
             <h1>BUPT二手车交易平台</h1>
           </el-col>
           <el-col :span="5">
-            <el-menu :default-active="index1" background-color="#efefef" class="navigation" mode="horizontal">
+            <el-menu :default-active="index1" background-color="#efefef" class="navigation" mode="horizontal" v-model="sort">
               <el-menu-item @click="buyCar" index="1">我要买车</el-menu-item>
               <el-menu-item @click="sellCar" index="2">我要卖车</el-menu-item>
               <el-menu-item @click="loginCar" index="3" v-if="sort == 0">登录</el-menu-item>
@@ -36,15 +36,25 @@ import {
 ref
 } from "vue";
 import router from "../router/index.js"
+import {getUserInfo} from "../http/api";
 
 export default {
   name: 'Home',
   setup(){
     //判断用户是否登录
     let sort = ref(0)
-    if(router.currentRoute.value.params.sort){
-      sort = router.currentRoute.value.params.sort
-    }
+    getUserInfo().then(res=>{
+      if(res != null){
+        console.log(res)
+        sort.value = 1;
+      }
+      else{
+        sort.value = 0;
+      }
+    })
+    // if(router.currentRoute.value.params.sort){
+    //   sort = router.currentRoute.value.params.sort
+    // }
     let buyCar=()=>{
       router.push({name:'Buy', params:{carType: 'first'}});
     }
