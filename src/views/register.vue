@@ -16,16 +16,16 @@
       </el-form-item>
       <el-form-item label="邮箱">
         <el-input placeholder="请输入邮箱号码" v-model="registerData.email"></el-input>
-        <el-button @click="getCode" round="true" type="primary" size="small">获取验证码</el-button>
+        <el-button @click="getCode" round type="primary" size="small">获取验证码</el-button>
       </el-form-item>
       <el-form-item label="验证码">
         <el-input placeholder="请输入验证码" v-model="registerData.code"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="subFun" class="reg-btn" round="true" type="primary">注册</el-button>
+        <el-button @click="subFun" class="reg-btn" round type="primary">注册</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button @click="changeLoginFun" class="login-btn" round="true" type="primary">已有账号，前往登录</el-button>
+        <el-button @click="changeLoginFun" class="login-btn" round type="primary">已有账号，前往登录</el-button>
       </el-form-item>
     </el-form>
   </div>

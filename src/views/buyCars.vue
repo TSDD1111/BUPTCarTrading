@@ -5,8 +5,8 @@
       <el-col :span="7"></el-col>
       <el-col :span="10">
         <el-carousel trigger="click" indicator-position="outside" :interval="5000" height="350px">
-          <el-carousel-item v-for="item in 3" :key="item">
-            <img @click="clickCar" src="../assets/1.jpg" class="run-picture">
+          <el-carousel-item v-for="(i, index) in 3" :key="index">
+            <img @click="clickCar" :src=lampInfo.carSrc[index] class="run-picture">
           </el-carousel-item>
         </el-carousel>
       </el-col>
@@ -94,10 +94,10 @@
       <el-col :span="8"></el-col>
       <el-col :span="8">
         <el-pagination
-            :page-size="20"
-            :pager-count="11"
-            layout="prev, pager, next"
-            :total="1000">
+            @current-change="handleCurrentChange"
+            :current-page="carInfo.page"
+            layout="prev, pager, next, jumper"
+            :page-count=totalPage>
         </el-pagination>
       </el-col>
       <el-col :span="8"></el-col>
@@ -109,13 +109,22 @@
 <script>
 import router from "../router/index.js";
 import {ref, reactive} from 'vue';
-import { getCarBrand,getCarSort } from '../http/api.js'     //获取api
+import { getCarBrand, getCarSort, getCarPage, getBanner, getUserInfo} from '../http/api.js'     //获取api
 
 export default {
   name: 'Buy',
   setup(){
-    let y_Row = [0,1,2,3,4];
-    let x_Col = [0,1,2,3,4];
+    //走马灯显示
+    let lampInfo = reactive({
+      carId:[],
+      carSrc:[],
+    })
+    getBanner().then(res=>{
+      for(let i = 0; i < res.length; i++){
+        lampInfo.carId[i] = res[i].carId;
+        lampInfo.carSrc[i] = res[i].carImg;
+      }
+    })
     let carType = ref('不限')   //车品牌
     let search = ref("")    //搜索栏
     let carBrand = reactive([])  //车品牌数组
@@ -131,8 +140,13 @@ export default {
     getCarSort("奔驰").then(res=>{
       carList.push(res)
     })
-    //40辆车的信息数组
+    getUserInfo().then(res=>{
+      console.log("user" + res)
+    })
+    //20辆车的信息数组
     let carInfo = reactive({
+      page:0,
+      carId:[],
       carName:[],
       carPrice:[],
       carTime:[],
@@ -140,22 +154,28 @@ export default {
       service:[],
       carSrc:[],
     })
-    for(let i = 0; i < 10; i++){
-      carInfo.carName[i] = "法拉利";
-      carInfo.carPrice[i] = "40万";
-      carInfo.carTime[i] = "10年";
-      carInfo.carDis[i] = "20万公里";
-      carInfo.service[i] = "到店服务";
-      carInfo.carSrc[i] = require('../assets/1.jpg');  //通过require解析出真正的路径
+    let totalPage = ref(0);
+    //搜索信息
+    let carPageSearch = {
+      brand:null,
+      series:null,
     }
-    for(let i = 10; i < 20; i++){
-      carInfo.carName[i] = "卡丁车";
-      carInfo.carPrice[i] = "400万";
-      carInfo.carTime[i] = "1年";
-      carInfo.carDis[i] = "200万公里";
-      carInfo.service[i] = "到店服务";
-      carInfo.carSrc[i] = require('../assets/1.jpg');
-    }
+    //返回结果
+    getCarPage(carPageSearch).then(res=>{
+      console.log(res.totalPage)
+      totalPage = res.totalPage;
+      console.log(totalPage)
+      for(let i = 0; i < res.list.length; i++){
+        carInfo.carName[i] = res.list[i].name;
+        carInfo.carId[i] = res.list[i].carId;
+        carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
+        carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+        carInfo.service[i] = "到店服务";
+        carInfo.carSrc[i] = res.list[i].cover;
+        carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年"
+      }
+      console.log(carInfo)
+    })
     //点击搜索按钮
     let searchInfo=()=>{
 
@@ -178,13 +198,16 @@ export default {
       router.push(router.options.routes[0].children[2])
       return
     }
+    //改变页码时的变化
+    let handleCurrentChange=()=>{
+      console.log(carInfo.page)
+    }
     return{
       clickCar,
       selectBrand,
       selectSort,
       searchInfo,
-      y_Row,
-      x_Col,
+      handleCurrentChange,
       carBrand,
       search,
       carType,
@@ -192,6 +215,8 @@ export default {
       carPrice,
       carList,
       carInfo,
+      totalPage,
+      lampInfo,
     }
   },
 }
@@ -207,7 +232,7 @@ export default {
 }
 .picture{
   margin-left: 10px;
-  width: 280px;
-  height: 190px;
+  width: 340px;
+  height: 250px;
 }
 </style>

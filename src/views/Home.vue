@@ -3,10 +3,10 @@
     <el-container>
       <el-header class="top">
         <el-row :gutter="10">
-          <el-col :span="18">
+          <el-col :span="19">
             <h1>BUPT二手车交易平台</h1>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-menu :default-active="index1" background-color="#efefef" class="navigation" mode="horizontal">
               <el-menu-item @click="buyCar" index="1">我要买车</el-menu-item>
               <el-menu-item @click="sellCar" index="2">我要卖车</el-menu-item>

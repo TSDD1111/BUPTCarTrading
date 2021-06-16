@@ -10,7 +10,7 @@
         <el-input placeholder="请再次输入密码" v-model="confirmPassword" show-password></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="resetFun" class="sub-btn" round="true" type="primary">重置密码</el-button>
+        <el-button @click="resetFun" class="sub-btn" round type="primary">重置密码</el-button>
       </el-form-item>
     </el-form>
   </div>

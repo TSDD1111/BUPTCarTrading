@@ -10,13 +10,13 @@
         <el-input placeholder="请输入密码" v-model="loginData.userPassword" show-password></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="subFun" class="sub-btn" round="true" type="primary">登录</el-button>
+        <el-button @click="subFun" class="sub-btn" round type="primary">登录</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button @click="changePassFun" class="re-btn" round="true" type="primary">忘记密码</el-button>
+        <el-button @click="changePassFun" class="re-btn" round type="primary">忘记密码</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button @click="changeRegFun" class="re-btn" round="true" type="primary">没有账号，前往注册</el-button>
+        <el-button @click="changeRegFun" class="re-btn" round type="primary">没有账号，前往注册</el-button>
       </el-form-item>
     </el-form>
   </div>

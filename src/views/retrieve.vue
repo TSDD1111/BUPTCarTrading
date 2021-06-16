@@ -4,13 +4,13 @@
     <el-form label-width="80px" :model="setData">
       <el-form-item label="邮箱号码">
         <el-input placeholder="请输入邮箱号码" v-model="setData.userMail"></el-input>
-        <el-button @click="getCode" round="true" type="primary" size="small">获取验证码</el-button>
+        <el-button @click="getCode" round type="primary" size="small">获取验证码</el-button>
       </el-form-item>
       <el-form-item label="验证码">
         <el-input placeholder="请输入验证码" v-model="setData.verCode"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="subFun" class="reg-btn" round="true" type="primary">重置密码</el-button>
+        <el-button @click="subFun" class="reg-btn" round type="primary">重置密码</el-button>
       </el-form-item>
     </el-form>
   </div>
