@@ -79,7 +79,6 @@ export default {
       userChangeInfo.userId = res.userId;
       userChangeInfo.userTelnum = res.userTelnum;
       userChangeInfo.email = res.email;
-      console.log(userChangeInfo)
     })
     //用于判断手机号是否含有非数字字符
     let teleReg = /^[0-9]*$/

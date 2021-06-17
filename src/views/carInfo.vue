@@ -5,20 +5,69 @@
       </div>
     </el-col>
   </el-row>
-  <el-row gutter="111">
-    <el-col :span="12"><div class="grid-content bg-purple">
-      <img id="picture" />
-    </div></el-col>
-    <el-col :span="12"><div class="grid-content bg-purple-light">
-      <div class="product-textbox">
-        <h1>
-          {{car_information[0].name}}
+  <el-row :gutter="10">
+    <el-col :span="12">
+      <div class="grid-content bg-purple">
+        <img id="picture" />
+      </div>
+    </el-col>
+    <el-col :span="12">
+      <div class="grid-content bg-purple-light">
+        <div class="product-textbox">
+          <h1>
+            {{car_information[0].name}}
+          </h1>
+          <el-table
+              :data="car_information"
+              style="width: 100%">
+            <el-table-column
+                prop= "brand"
+                label="品牌"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="kilometer"
+                label="里程"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="gearbox"
+                label="变速箱">
+            </el-table-column>
+            <el-table-column
+                prop="prePrice"
+                label="价格">
+            </el-table-column>
+          </el-table>
+          <button class="buycar" @click="buyCar"  >{{text1}}</button>
+          <el-dialog
+              title="提示"
+              v-model="dialog1Visible"
+              width="30%">
+            <span>{{diglog1Text}}</span>
+            <template #footer>
+    <span class="dialog-footer">
+      <el-button type="primary" @click="dialog1Visible = false">确 定</el-button>
+    </span>
+            </template>
+          </el-dialog>
+        </div>
+      </div>
+    </el-col>
+  </el-row>
+
+
+  <el-row :gutter="10">
+    <el-col :span="24">
+      <div class="grid-content bg-purple-dark">
+        <h1 class="baseinfo">
+          {{car_information[0].name}} 基本信息
         </h1>
         <el-table
             :data="car_information"
             style="width: 100%">
           <el-table-column
-              prop= "brand"
+              prop="brand"
               label="品牌"
               width="180">
           </el-table-column>
@@ -28,112 +77,70 @@
               width="180">
           </el-table-column>
           <el-table-column
+              prop="fuelType"
+              label="燃料类型"
+              width="180">
+          </el-table-column>
+          <el-table-column
               prop="gearbox"
               label="变速箱">
           </el-table-column>
           <el-table-column
-              prop="prePrice"
-              label="价格">
+              prop="power"
+              label="动力">
+          </el-table-column>
+          <el-table-column
+              prop="notRepairedDamage"
+              label="是否有未修复的损坏">
+          </el-table-column>
+          <el-table-column
+              prop="userTelnum"
+              label="卖家电话">
           </el-table-column>
         </el-table>
-        <button class="buycar" @click="buyCar"  >{{text1}}</button>
-        <el-dialog
-            title="提示"
-            v-model="dialog1Visible"
-            width="30%"
-            :before-close="handleClose">
-          <span>{{diglog1Text}}</span>
-          <template #footer>
-    <span class="dialog-footer">
-      <el-button type="primary" @click="dialog1Visible = false">确 定</el-button>
-    </span>
-          </template>
-        </el-dialog>
       </div>
-    </div></el-col>
-  </el-row>
-
-
-  <el-row gutter="1111">
-    <el-col :span="24"><div class="grid-content bg-purple-dark">
-      <h1 class="baseinfo">
-        {{car_information[0].name}} 基本信息
-      </h1>
-      <el-table
-          :data="car_information"
-          style="width: 100%">
-        <el-table-column
-            prop="brand"
-            label="品牌"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="kilometer"
-            label="里程"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="fuelType"
-            label="燃料类型"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="gearbox"
-            label="变速箱">
-        </el-table-column>
-        <el-table-column
-            prop="power"
-            label="动力">
-        </el-table-column>
-        <el-table-column
-            prop="notRepairedDamage"
-            label="是否有未修复的损坏">
-        </el-table-column>
-        <el-table-column
-            prop="userTelnum"
-            label="卖家电话">
-        </el-table-column>
-      </el-table>
-
-
-    </div></el-col>
+    </el-col>
   </el-row>
   <el-row>
-    <el-col :span="24"><div class="grid-content bg-purple-dark">
-      <h1 class="baseinfo">
-        评论信息
-      </h1>
-    </div></el-col>
+    <el-col :span="24">
+      <div class="grid-content bg-purple-dark">
+        <h1 class="baseinfo">
+          评论信息
+        </h1>
+      </div>
+    </el-col>
   </el-row>
-
   <el-row v-for="carcomment in carcomments"  v-bind:key="carcomment">
-    <el-col :span="24"><div class="grid-content bg-purple-dark">
-      <div class="comment-block" >
-        {{carcomment.comment}}
+    <el-col :span="24">
+      <div class="grid-content bg-purple-dark">
+        <div class="comment-block" >
+          {{carcomment.comment}}
+        </div>
       </div>
-    </div></el-col>
+    </el-col>
   </el-row>
   <el-row>
-    <el-col :span="24"><div class="grid-content bg-purple-dark">
-      <h1 class="baseinfo">
-        写评论
-      </h1>
-    </div></el-col>
+    <el-col :span="24">
+      <div class="grid-content bg-purple-dark">
+        <h1 class="baseinfo">
+          写评论
+        </h1>
+      </div>
+    </el-col>
   </el-row>
   <el-form-item>
     <el-input
         type="textarea"
         :rows="2"
         placeholder="请输入内容"
-        v-model="input_comment"
-    ></el-input>
+        v-model="input_comment">
+    </el-input>
   </el-form-item>
   <el-button type="success" icon="el-icon-check" circle @click="submitComment" :loading="successbutton" ></el-button>
   <el-dialog
       title="提示"
       v-model="dialog2Visible"
-      width="30%"
-      :before-close="handleClose">
+      width="30%">
     <span>{{diglog2Text}}</span>
     <template #footer>
     <span class="dialog-footer">

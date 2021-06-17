@@ -67,8 +67,7 @@
     <el-dialog
         title="提示"
         v-model="diglogVisible"
-        width="30%"
-        :before-close="handleClose">
+        width="30%">
       <span>{{diglogText}}</span>
       <template #footer>
     <span class="dialog-footer">
