@@ -5,7 +5,7 @@
       </div>
     </el-col>
   </el-row>
-  <el-row gutter="111">
+  <el-row gutter="11">
     <el-col :span="12"><div class="grid-content bg-purple">
       <img id="picture" />
     </div></el-col>
@@ -52,7 +52,6 @@
       </div>
     </div></el-col>
   </el-row>
-
 
   <el-row gutter="1111">
     <el-col :span="24"><div class="grid-content bg-purple-dark">
@@ -139,7 +138,6 @@
   </el-dialog>
 </template>
 
-import axios;
 <script>
 // eslint-disable-next-line no-unused-vars
 import {getCarInfo, submitOrder} from "../http/api";
@@ -148,7 +146,7 @@ import {ref,reactive} from "vue";
 import router from "../router";
 
 export default {
-  name : 'carinfo',
+  name : 'CarInfo',
   setup() {
     let car_information =reactive([{
       name:"奔驰S500",

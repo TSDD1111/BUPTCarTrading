@@ -1,8 +1,8 @@
 import axios from "axios"
 
 const $http = axios.create({
-    baseURL: '',
-    timeout: 3000,
+    baseURL: 'http://8.140.2.249',
+    timeout: 10000,
     // headers: {'X-Custom-Header': 'foobar'}
 });
 

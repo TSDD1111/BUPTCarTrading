@@ -2,16 +2,30 @@
   <div class="retrieve">
     <h1>BUPT二手车交易平台重置密码</h1>
     <el-form label-width="80px" :model="setData">
-      <el-form-item label="邮箱号码">
-        <el-input placeholder="请输入邮箱号码" v-model="setData.userMail"></el-input>
-        <el-button @click="getCode" round type="primary" size="small">获取验证码</el-button>
-      </el-form-item>
-      <el-form-item label="验证码">
-        <el-input placeholder="请输入验证码" v-model="setData.verCode"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="subFun" class="reg-btn" round type="primary">重置密码</el-button>
-      </el-form-item>
+      <el-row :gutter="10">
+        <el-col :span="19">
+          <el-form-item label="邮箱号码">
+            <el-input placeholder="请输入邮箱号码" v-model="setData.userMail"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-button @click="getCode" round type="primary" class="re-btn" size="small">获取验证码</el-button>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="24">
+          <el-form-item label="验证码">
+            <el-input placeholder="请输入验证码" v-model="setData.verCode"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="24">
+          <el-form-item>
+            <el-button @click="subFun" class="reg-btn" round type="primary">重置密码</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
   </div>
 </template>

@@ -7,19 +7,15 @@
             <h1>BUPT二手车交易平台</h1>
           </el-col>
           <el-col :span="5">
-            <el-menu :default-active="index1" background-color="#efefef" class="navigation" mode="horizontal" v-model="sort">
+            <el-menu :default-active="choose" background-color="#efefef" class="navigation" mode="horizontal" v-model="choose">
               <el-menu-item @click="buyCar" index="1">我要买车</el-menu-item>
               <el-menu-item @click="sellCar" index="2">我要卖车</el-menu-item>
-              <el-menu-item @click="loginCar" index="3" v-if="sort == 0">登录</el-menu-item>
-              <el-menu-item @click="personSet" index="3" v-else-if="sort == 1">个人中心</el-menu-item>
+              <el-menu-item @click="personSet" index="3" v-if="sort == 1">
+                <div class="block"><el-avatar shape="square" :size="50" :src="avatar"></el-avatar></div>
+              </el-menu-item>
+              <el-menu-item @click="loginCar" index="3" v-else>登录</el-menu-item>
             </el-menu>
           </el-col>
-<!--          <el-col :span="2">-->
-<!--            <div class="exit">-->
-<!--              <span class="btn-exit">admin</span>-->
-<!--              <el-button class="btn-exit" type="text">退出</el-button>-->
-<!--            </div>-->
-<!--          </el-col>-->
         </el-row>
       </el-header>
       <el-main>
@@ -30,10 +26,8 @@
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
 import {
-ref
+ref,watch
 } from "vue";
 import router from "../router/index.js"
 import {getUserInfo} from "../http/api";
@@ -43,36 +37,83 @@ export default {
   setup(){
     //判断用户是否登录
     let sort = ref(0)
+    let userName = ref("")
+    let choose = ref("1")
+    let avatar = ref("")
     getUserInfo().then(res=>{
-      if(res != null){
-        console.log(res)
+      if(res != ""){
         sort.value = 1;
+        userName.value = res.userName
+        avatar.value = res.avatar
       }
       else{
         sort.value = 0;
       }
     })
-    // if(router.currentRoute.value.params.sort){
-    //   sort = router.currentRoute.value.params.sort
-    // }
+    let url = router.currentRoute.value.name;
+    if(url == "Buy"){
+      choose.value = "1";
+    }
+    else if(url == "sellcars"){
+      choose.value = "2";
+    }
+    else if(url == "personInfo" || url == "buyCarInfo" || url == "sellCarInfo"){
+      choose.value = "3";
+    }
+    //监听是否退出登录
+    watch(()=>router.currentRoute.value.name, (newValue) =>{
+      if(newValue == "Buy"){
+        choose.value = "1";
+        getUserInfo().then(res=>{
+          if(res != ""){
+            sort.value = 1;
+            userName.value = res.userName
+            avatar.value = res.avatar
+          }
+          else{
+            sort.value = 0;
+          }
+        })
+      }
+      else if(newValue == "personInfo"){
+        choose.value = "3";
+        getUserInfo().then(res=>{
+          if(res != ""){
+            sort.value = 1;
+            userName.value = res.userName
+            avatar.value = res.avatar
+          }
+          else{
+            sort.value = 0;
+          }
+        })
+      }
+    });
+    //我要买车
     let buyCar=()=>{
+      choose.value = "1";
       router.push({name:'Buy', params:{carType: 'first'}});
     }
+    //我要卖车
     let sellCar=()=>{
+      choose.value = "2"
       router.push(router.options.routes[0].children[1]);
     }
     //跳转到登录界面
     let loginCar=()=>{
+      choose.value = "3";
       router.push('/login')
     }
     //跳转到个人设置
     let personSet=()=>{
-      router.push(router.options.routes[0].children[4])
+      choose.value = "3";
+      router.push("/perInfo")
     }
     return{
-      index1 : "1",
-      index2 : "2",
       sort,
+      userName,
+      choose,
+      avatar,
       buyCar,
       sellCar,
       loginCar,

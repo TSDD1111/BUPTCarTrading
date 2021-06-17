@@ -28,15 +28,36 @@ const routes = [
       },
       {
         //3
-        path: '/buyChange',
-        name: 'buyChange',
-        component: () => import(/* webpackChunkName: "login" */ '../views/buy.vue')
-      },
-      {
-        //4
         path: '/person',
         name: 'Person',
-        component: () => import(/* webpackChunkName: "login" */ '../views/person.vue')
+        component: () => import(/* webpackChunkName: "login" */ '../views/person.vue'),
+        children:[
+          {
+            path: '/perInfo',
+            name: 'personInfo',
+            component: () => import(/* webpackChunkName: "login" */ '../views/personInfo.vue')
+          },
+          {
+            path: '/changePerInfo',
+            name: 'changePerInfo',
+            component: () => import(/* webpackChunkName: "login" */ '../views/changePerInfo.vue')
+          },
+          {
+            path: '/changePassword',
+            name: 'changePassword',
+            component: () => import(/* webpackChunkName: "login" */ '../views/changePassword.vue')
+          },
+          {
+            path: '/buyCarInfo',
+            name: 'buyCarInfo',
+            component: () => import(/* webpackChunkName: "login" */ '../views/buyCarInfo.vue')
+          },
+          {
+            path: '/sellCarInfo',
+            name: 'sellCarInfo',
+            component: () => import(/* webpackChunkName: "login" */ '../views/sellCarInfo.vue')
+          },
+        ]
       },
     ]
   },
