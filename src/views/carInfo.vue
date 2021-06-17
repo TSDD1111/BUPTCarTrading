@@ -235,41 +235,40 @@ export default {
         }else{
           userid= res.userId
         }
-      })
-      console.log(userid)
-      if(userid!=null) {
-        if (submitcomment_button.value == false && input_comment.value != null) {
-          submitcomment_button.value = true
-          successbutton.value = true
-          let data = {
-            carId: carid,
-            userId: userid,
-            commentDetails: input_comment.value
-          }
-
-          insertComment(data).then(res => {
-            if (res == "") {
-              diglog2Text.value = "提交成功"
-              dialog2Visible.value = true
-              input_comment.value = null
-              submitcomment_button.value = false
-              successbutton.value = false
-            } else {
-              diglog2Text.value = "提交未成功"
-              dialog2Visible.value = true
-              input_comment.value = null
-              successbutton.value = false
+        if(userid!=null) {
+          if (submitcomment_button.value == false && input_comment.value != null) {
+            submitcomment_button.value = true
+            successbutton.value = true
+            let data = {
+              carId: carid,
+              userId: userid,
+              commentDetails: input_comment.value
             }
-          })
-        } else {
-          diglog2Text.value = "评论不能为空"
+
+            insertComment(data).then(res => {
+              if (res == "") {
+                diglog2Text.value = "提交成功"
+                dialog2Visible.value = true
+                input_comment.value = null
+                submitcomment_button.value = false
+                successbutton.value = false
+              } else {
+                diglog2Text.value = "提交未成功"
+                dialog2Visible.value = true
+                input_comment.value = null
+                successbutton.value = false
+              }
+            })
+          } else {
+            diglog2Text.value = "评论不能为空"
+            dialog2Visible.value = true
+          }
+        }
+        else {
+          diglog2Text.value = "请先登录"
           dialog2Visible.value = true
         }
-      }
-      else {
-        diglog2Text.value = "请先登录"
-        dialog2Visible.value = true
-      }
+      })
 
     }
     function buyCar() {
@@ -280,32 +279,32 @@ export default {
         }else{
           userid= res.userId
         }
-      })
-      if (userid != null) {
-        if (buycar_button.value == false) {
-          let order = {
-            buyerId: userid,
-            carId: carid,
-            sellerId: car_information[0].prePrice,
-            tradePrice: car_information[0].sellerID
-          }
-          text1.value = "提交中"
-          insertOrder(order).then(res => {
-            if (res == "") {
-              text1.value = "已提交"
-              buycar_button.value = true
-            } else {
-              dialog1Visible.value = true
-              text1.value = "我要买车"
-              diglog1Text.value = "提交失败"
+        if (userid != null) {
+          if (buycar_button.value == false) {
+            let order = {
+              buyerId: userid,
+              carId: carid,
+              sellerId: car_information[0].prePrice,
+              tradePrice: car_information[0].sellerID
             }
-          })
+            text1.value = "提交中"
+            insertOrder(order).then(res => {
+              if (res == "") {
+                text1.value = "已提交"
+                buycar_button.value = true
+              } else {
+                dialog1Visible.value = true
+                text1.value = "我要买车"
+                diglog1Text.value = "提交失败"
+              }
+            })
+          }
         }
-      }
-      else{
-        dialog1Visible.value = true
-        diglog1Text.value = "请先登录"
-      }
+        else{
+          dialog1Visible.value = true
+          diglog1Text.value = "请先登录"
+        }
+      })
     }
 
 
@@ -330,15 +329,6 @@ export default {
 }
 </script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
 .baseinfo{
   float: left;
 }

@@ -48,7 +48,10 @@ export default {
         buyCarInfo.push(res);
         for(let i = 0; i < res.length; i++){
           buyCarInfo[0][i].order.tradePrice = (buyCarInfo[0][i].order.tradePrice / 10000) + "万";
-          buyCarInfo[0][i].order.createDate = buyCarInfo[0][i].order.createDate.slice(0,10) + " " + buyCarInfo[0][i].order.createDate.slice(11,19);
+          //截取时间
+          if(buyCarInfo[0][i].order.createDate != null){
+            buyCarInfo[0][i].order.createDate = buyCarInfo[0][i].order.createDate.slice(0,10) + " " + buyCarInfo[0][i].order.createDate.slice(11,19);
+          }
         }
       })
     })

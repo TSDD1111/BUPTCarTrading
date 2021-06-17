@@ -57,12 +57,12 @@ export default {
     else if(url == "sellcars"){
       choose.value = "2";
     }
-    else if(url == "personInfo" || url == "buyCarInfo" || url == "sellCarInfo"){
+    else if(url == "personInfo" || url == "buyCarInfo" || url == "sellCarInfo" || url == "changePerInfo" || url == "changePassword"){
       choose.value = "3";
     }
     //监听是否退出登录
     watch(()=>router.currentRoute.value.name, (newValue) =>{
-      if(newValue == "Buy"){
+      if(newValue == "Buy" || newValue == "CarInfo"){
         choose.value = "1";
         getUserInfo().then(res=>{
           if(res != ""){

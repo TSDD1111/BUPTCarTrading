@@ -126,13 +126,13 @@ export default {
         }else{
           form.sellerId = res.userId
         }
+        if(form.sellerId==null) {
+          diglogVisible.value = true
+          diglogText.value = "请先登录"
+        }else{
+          dialogTableVisible.value = true
+        }
       })
-      if(form.sellerId==null) {
-        diglogVisible.value = true
-        diglogText.value = "请先登录"
-      }else{
-        dialogTableVisible.value = true
-      }
     }
 
     function submitForm() {
