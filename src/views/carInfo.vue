@@ -176,7 +176,8 @@ export default {
       prePrice:10000,
       sellerID:0,
       carDescribe:0,
-      userTelnum:0
+      userTelnum:0,
+      sellerId: null,
     }])
     let carImgs = require("../assets/logo.png")
     let input_comment = ref(null)
@@ -202,6 +203,7 @@ export default {
       car_information[0].power = res.carInfo.power
       car_information[0].fuelType = res.carInfo.fuelType
       car_information[0].userTelnum = res.owner.userTelnum
+      car_information[0].sellerId = res.owner.userId
 
       if(res.carInfo.gearbox === 0){
         car_information[0].gearbox = "手动"
@@ -291,8 +293,8 @@ export default {
             let order = {
               buyerId: userid,
               carId: carid,
-              sellerId: car_information[0].prePrice,
-              tradePrice: car_information[0].sellerID
+              sellerId: car_information[0].sellerId,
+              tradePrice: car_information[0].prePrice
             }
             text1.value = "提交中"
             insertOrder(order).then(res => {

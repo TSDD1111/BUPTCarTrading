@@ -35,9 +35,9 @@
     ]">
           <el-input type="kilometer" v-model.number="form.kilometer" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="价格(万)"  :label-width="formLabelWidth" prop="price" :rules="[
+        <el-form-item label="价格"  :label-width="formLabelWidth" prop="price" :rules="[
       { required: true, message: '价格不能为空'},
-      { type: 'number', min:1,max:1000,message: '价格必须为数字值,且要符合大小'}
+      { type: 'number', min:1,max:100000000,message: '价格必须为数字值,且要符合大小'}
     ]">
           <el-input type="price" v-model.number="form.price" autocomplete="off"></el-input>
         </el-form-item>
@@ -141,7 +141,6 @@ export default {
           &&form.regdate!=null&&form.images!=null
       )
       {
-        console.log(form)
         insertCar(form).then(res=>{
           if(res == "") {
             dialogTableVisible.value = false
@@ -169,7 +168,6 @@ export default {
 
     //upload images,res is url of images
     function Upload(res) {
-      console.log(res)
       form.images = []
       form.images.push(res)
     }
