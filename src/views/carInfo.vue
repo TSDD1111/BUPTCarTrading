@@ -8,7 +8,7 @@
   <el-row :gutter="10">
     <el-col :span="12">
       <div class="grid-content bg-purple">
-        <img id="picture" />
+        <img id="picture" class="carPicture"/>
       </div>
     </el-col>
     <el-col :span="12">
@@ -338,6 +338,10 @@ export default {
 }
 </script>
 <style>
+.carPicture{
+  width: 600px;
+  height: 400px;
+}
 .baseinfo{
   float: left;
 }

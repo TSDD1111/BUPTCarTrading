@@ -3,26 +3,26 @@
     <button class="salecar" @click="logincheck()">我要卖车</button>
     <el-dialog title="我要卖车" v-model="dialogTableVisible">
       <el-form :model="form">
-        <el-form-item label="品牌" :label-width="formLabelWidth">
-          <el-select v-model="form.brand" >
-            <el-option v-for="i in carbrands" :key="i" :label="i.brand" :value="i.brand" @click="requestCarSeries(i.brand)"></el-option>
-          </el-select>
+        <el-form-item label="品牌"  :label-width="formLabelWidth" prop="brand" :rules="[
+      { required: true, message: '品牌不能为空'},
+    ]">
+          <el-input type="brand" v-model.number="form.brand" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="车名"  :label-width="formLabelWidth" prop="name" :rules="[
+      { required: true, message: '车名不能为空'},
+    ]">
+          <el-input type="name" v-model.number="form.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="日期" :label-width="formLabelWidth">
           <el-date-picker
               v-model="form.regdate"
               type="date"
               placeholder="Pick a date"
-              :default-value="new Date(2010, 9, 1)"
-          >
+              :default-value="new Date(2010, 9, 1)">
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="型号" :label-width="formLabelWidth">
-          <el-select v-model="form.name">
-            <el-option v-for="i in carinfo[0]" :key="i" :label="i.carSeries" :value="i.carSeries" @click="updateForm(i)"></el-option>
-          </el-select>
-        </el-form-item>
+
         <el-form-item label="是否有未维修的损坏" :label-width="formLabelWidth">
           <el-select v-model="form.isnotrepair" >
             <el-option  label="是" :value="0"></el-option>
@@ -83,7 +83,7 @@ import axios;
 import {reactive, ref} from "vue";
 import {isNumber} from "element-plus/es/utils/util";
 // eslint-disable-next-line no-unused-vars
-import {getCarBrand, getCarSeries, getUserInfo, insertCar, submmitUpload} from "../http/api";
+import {getUserInfo, insertCar} from "../http/api";
 
 export default {
   name: 'sellcars',
@@ -99,7 +99,7 @@ export default {
       kilometer:null,
       model:null,
       name:null,
-      power:null,
+      power:"1.5L",
       price:null,
       regdate:null,
       region:"北京",
@@ -111,12 +111,7 @@ export default {
     let diglogVisible = ref(false)
     let diglogText = ref(null)
     let submit_button_load = ref(false)
-    getCarBrand().then(
-        res=>{
-          for(var i =0;i<res.length;i++){
-            carbrands.push({brand:res[i]})
-          }
-        })
+
     function logincheck(){
       //此处判断是否登录
       getUserInfo().then(res=>{
@@ -151,21 +146,6 @@ export default {
       }
     }
 
-    function updateForm(i){
-      form.brand = i.brand
-      form.name = i.carSeries
-      form.model = i.bodytype
-      form.power = "1.5L"
-    }
-
-    function  requestCarSeries(brand){
-      getCarSeries(brand).then(res=>{
-        carinfo.splice(0)
-        carinfo.push(res)
-        form.name = ""
-      })
-    }
-
     //upload images,res is url of images
     function Upload(res) {
       form.images = []
@@ -180,8 +160,6 @@ export default {
       carnames,
       carinfo,
       submitForm,
-      updateForm,
-      requestCarSeries,
       diglogVisible,
       submit_button_load,
       diglogText,
