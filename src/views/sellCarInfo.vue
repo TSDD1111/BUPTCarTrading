@@ -17,6 +17,16 @@
         label="是否出售"
         width="200">
     </el-table-column>
+    <el-table-column
+        prop="userName"
+        label="买家用户名"
+        width="150">
+    </el-table-column>
+    <el-table-column
+        prop="userTelnum"
+        label="买家手机号"
+        width="200">
+    </el-table-column>
   </el-table>
 </template>
 

@@ -40,7 +40,7 @@ import {reactive} from "vue";
 import {getUserInfo, bCarInfo} from "../http/api";
 
 export default {
-  name: 'sellCarInfo',
+  name: 'buyCarInfo',
   setup() {
     let buyCarInfo = reactive([])
     getUserInfo().then(res=>{

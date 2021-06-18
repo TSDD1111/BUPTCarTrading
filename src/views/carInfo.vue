@@ -144,7 +144,7 @@
     <span>{{diglog2Text}}</span>
     <template #footer>
     <span class="dialog-footer">
-      <el-button type="primary" @click="dialog2Visible = false">确 定</el-button>
+      <el-button type="primary" @click="flash">确 定</el-button>
     </span>
     </template>
   </el-dialog>
@@ -159,7 +159,7 @@ import {ref,reactive} from "vue";
 import router from "../router";
 
 export default {
-  name : 'carinfo',
+  name : 'CarInfo',
   setup() {
     let car_information =reactive([{
       name:"奔驰S500",
@@ -237,6 +237,10 @@ export default {
         carcomments.push({comment:res[a].commentDetails})
       }
     })
+    let flash=()=>{
+      dialog2Visible = false
+      location.reload()
+    }
     function submitComment() {
       getUserInfo().then(res=>{
         if(res == ""){
@@ -326,6 +330,7 @@ export default {
       userid,
       submitComment,
       buyCar,
+      flash,
       text1,
       buycar_button,
       dialog1Visible,

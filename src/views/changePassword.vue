@@ -66,7 +66,7 @@ import {ElMessage} from "element-plus";
 import {send, getUserInfo, updateUserInfo} from "../http/api";
 
 export default {
-  name: 'personInfo',
+  name: 'changePassword',
   setup() {
     let userChangeInfo = reactive({
       userId:"",

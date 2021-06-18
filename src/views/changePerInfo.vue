@@ -46,7 +46,7 @@ import router from "../router";
 import {ElMessage} from "element-plus";
 
 export default {
-  name: 'personInfo',
+  name: 'changePerInfo',
   setup() {
     let userChangeInfo = reactive({
       userId:"",
