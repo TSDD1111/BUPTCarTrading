@@ -196,6 +196,7 @@ export default {
 
     getCarInfo(carid).then(res=>{
       document.getElementById("picture").src = res.carImages[0]
+      console.log(res)
       car_information[0].name = res.carInfo.name
       car_information[0].brand = res.carInfo.brand
       car_information[0].prePrice = res.carInfo.prePrice
