@@ -2,6 +2,7 @@ import axios from "axios"
 
 const $http = axios.create({
     baseURL: 'http://8.140.2.249',
+    // baseURL: 'http://10.128.238.122:8088',
     timeout: 10000,
     // headers: {'X-Custom-Header': 'foobar'}
 });

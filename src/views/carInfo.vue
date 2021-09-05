@@ -1,4 +1,5 @@
 <template>
+  <div id="pay">
   <el-row>
     <el-col :span="24">
       <div class="grid-content bg-purple-dark">
@@ -148,6 +149,7 @@
     </span>
     </template>
   </el-dialog>
+  </div>
 </template>
 
 import axios;
@@ -196,7 +198,6 @@ export default {
 
     getCarInfo(carid).then(res=>{
       document.getElementById("picture").src = res.carImages[0]
-      console.log(res)
       car_information[0].name = res.carInfo.name
       car_information[0].brand = res.carInfo.brand
       car_information[0].prePrice = res.carInfo.prePrice
@@ -307,9 +308,10 @@ export default {
                 text1.value = "已提交"
                 buycar_button.value = true
               } else {
-                dialog1Visible.value = true
-                text1.value = "我要买车"
-                diglog1Text.value = "提交失败"
+                router.push({name:"Pay", params:{htmlCode:res}});
+                // dialog1Visible.value = true
+                // text1.value = "我要买车"
+                // diglog1Text.value = "提交失败"
               }
             })
           }
