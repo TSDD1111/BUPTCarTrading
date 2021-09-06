@@ -39,7 +39,7 @@
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
-        >Delete</el-button
+        >下架</el-button
         >
       </template>
     </el-table-column>

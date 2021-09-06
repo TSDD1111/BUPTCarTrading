@@ -183,7 +183,7 @@ export default {
     }])
     let carImgs = require("../assets/logo.png")
     let input_comment = ref(null)
-    let text1 = ref("我要买车")
+    let text1 = ref("立即预定")
     let buycar_button = ref(false)
     let submitcomment_button = ref(false)
     let carid = router.currentRoute.value.query.carId
@@ -303,17 +303,18 @@ export default {
               tradePrice: car_information[0].prePrice
             }
             text1.value = "提交中"
-            insertOrder(order).then(res => {
-              if (res == "") {
-                text1.value = "已提交"
-                buycar_button.value = true
-              } else {
+            try{
+              insertOrder(order).then(res => {
                 router.push({name:"Pay", params:{htmlCode:res}});
-                // dialog1Visible.value = true
-                // text1.value = "我要买车"
-                // diglog1Text.value = "提交失败"
-              }
-            })
+              })
+            }
+            catch (e) {
+              dialog1Visible.value = true
+              buycar_button.value = true
+              text1.value = "立即预定"
+              diglog1Text.value = "下单失败"
+            }
+
           }
         }
         else{
