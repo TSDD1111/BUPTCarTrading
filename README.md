@@ -1,2 +1,3 @@
 # BUPTCarTrading
 BUPT二手车交易平台前端
+更改了carInfo和sellcars两个页面
