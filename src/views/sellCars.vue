@@ -14,6 +14,7 @@
               type="date"
               placeholder="Pick a date"
               :default-value="new Date(2010, 9, 1)"
+              :disabled-date="disableTime"
           >
           </el-date-picker>
         </el-form-item>
@@ -38,13 +39,13 @@
       { required: true, message: '价格不能为空'},
       { type: 'number', min:1,max:10000,message: '价格必须为数字值,且要符合大小'}
     ]">
-          <el-input type="price" v-model.number="form.price" autocomplete="off"></el-input>
+          <el-input type="number" min="1.0"  step="0.1" v-model.number="form.price" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="行驶里程(万公里)"  :label-width="formLabelWidth" prop="kilometer" :rules="[
       { required: true, message: '里程不能为空'},
-      { type: 'number', min:1,max:500,message: '里程必须为数字值,且要符合大小'}
+      { type: 'number', min:1,max:100,message: '里程必须为数字值,且要符合大小'}
     ]">
-          <el-input type="kilometer" v-model.number="form.kilometer" autocomplete="off"></el-input>
+          <el-input type="number" min="1.0"  step="0.1" v-model.number="form.kilometer" autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="描述"  :label-width="formLabelWidth" prop="carDescribe" :rules="[
@@ -157,10 +158,15 @@ export default {
         dialogTableVisible.value = true
       }
     }
+    function disableTime(time){
+      return time.getTime() > Date.now();
+    }
 
     function predict(){
       if (isNumber(form.kilometer)
-          &&form.kilometer>0&&form.brand!=""
+          &&form.kilometer>0
+          &&form.kilometer<101
+          &&form.brand!=""
           &&form.isnotrepair!=null
           &&form.name!=""
           &&form.regdate!=null
@@ -184,10 +190,19 @@ export default {
       }
     }
     function submitForm() {
-      if (isNumber(form.price)&&isNumber(form.kilometer)&&form.price>0
-          &&form.kilometer>0&&form.brand!=""&&form.isnotrepair!=null
-          &&form.name!=""&&form.carDescribe!=null&&form.price!=null
-          &&form.regdate!=null&&form.images!=null
+      if (isNumber(form.price)
+          &&isNumber(form.kilometer)
+          &&form.price>0
+          &&form.price<10001
+          &&form.kilometer>0
+          &&form.kilometer<101
+          &&form.brand!=""
+          &&form.isnotrepair!=null
+          &&form.name!=""
+          &&form.carDescribe!=null
+          &&form.price!=null
+          &&form.regdate!=null
+          &&form.images!=null
       )
       {
         insertCar(form).then(res=>{
@@ -250,6 +265,7 @@ export default {
       predict,
       predict_button_load,
       predict_price,
+      disableTime
     }
   },
 }
