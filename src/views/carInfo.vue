@@ -1,5 +1,4 @@
 <template>
-  <div id="pay">
   <el-row>
     <el-col :span="24">
       <div class="grid-content bg-purple-dark">
@@ -9,7 +8,11 @@
   <el-row :gutter="10">
     <el-col :span="12">
       <div class="grid-content bg-purple">
-        <img id="picture" class="carPicture"/>
+        <el-carousel trigger="click" indicator-position="outside" :interval="5000" height="400px">
+          <el-carousel-item v-for="(i,index) in carImgs.length" :key="index">
+            <img :src=carImgs[index]  :class="carPicture">
+          </el-carousel-item>
+        </el-carousel>
       </div>
     </el-col>
     <el-col :span="12">
@@ -94,10 +97,6 @@
               prop="notRepairedDamage"
               label="是否有未修复的损坏">
           </el-table-column>
-          <el-table-column
-              prop="userTelnum"
-              label="卖家电话">
-          </el-table-column>
         </el-table>
       </div>
     </el-col>
@@ -114,9 +113,14 @@
   <el-row v-for="carcomment in carcomments"  v-bind:key="carcomment">
     <el-col :span="24">
       <div class="grid-content bg-purple-dark">
+        <el-col>
+          <el-avatar shape="square" :size="50" :src=carcomment.userAvatar></el-avatar>
+        </el-col>
+        <el-col>
         <div class="comment-block" >
-          {{carcomment.comment}}
+          {{carcomment.userName}}:{{carcomment.comment}}
         </div>
+        </el-col>
       </div>
     </el-col>
   </el-row>
@@ -149,7 +153,6 @@
     </span>
     </template>
   </el-dialog>
-  </div>
 </template>
 
 import axios;
@@ -181,13 +184,16 @@ export default {
       userTelnum:0,
       sellerId: null,
     }])
-    let carImgs = require("../assets/logo.png")
+    let carImgs = reactive([])
+    let carImgs_Length = ref(1)
     let input_comment = ref(null)
-    let text1 = ref("立即预定")
+    let text1 = ref("我要买车")
     let buycar_button = ref(false)
     let submitcomment_button = ref(false)
     let carid = router.currentRoute.value.query.carId
     let userid = null
+    let userName = null
+    let userAvatar = null
     let carcomments  = reactive([])
     let dialog1Visible = ref(false)
     let diglog1Text = ref("点击提交评论")
@@ -197,15 +203,17 @@ export default {
     //wait response
 
     getCarInfo(carid).then(res=>{
-      document.getElementById("picture").src = res.carImages[0]
+      carImgs_Length.value = res.carImages.length;
+      for(let i = 0;i<res.carImages.length;i++){
+        carImgs.push(res.carImages[i]);
+      }
       car_information[0].name = res.carInfo.name
       car_information[0].brand = res.carInfo.brand
       car_information[0].prePrice = res.carInfo.prePrice
       car_information[0].kilometer = res.carInfo.kilometer
       car_information[0].power = res.carInfo.power
       car_information[0].fuelType = res.carInfo.fuelType
-      car_information[0].userTelnum = res.owner.userTelnum
-      car_information[0].sellerId = res.owner.userId
+      car_information[0].sellerId = res.carInfo.sellerId
 
       if(res.carInfo.gearbox === 0){
         car_information[0].gearbox = "手动"
@@ -236,8 +244,9 @@ export default {
     getCarComment(carComment).then(res=>{
       for(var i = 0;i<res.length;i++) {
         var a = i.toString()
-        carcomments.push({comment:res[a].commentDetails})
+        carcomments.push({userName:res[a].userName,comment:res[a].commentDetails,userAvatar:res[a].userAvatar})
       }
+      console.log(carcomments)
     })
     let flash=()=>{
       dialog2Visible = false
@@ -249,6 +258,8 @@ export default {
           userid= null
         }else{
           userid= res.userId
+          userAvatar = res.avatar
+          userName = res.userName
         }
         if(userid!=null) {
           if (submitcomment_button.value == false && input_comment.value != null) {
@@ -257,7 +268,9 @@ export default {
             let data = {
               carId: carid,
               userId: userid,
-              commentDetails: input_comment.value
+              commentDetails: input_comment.value,
+              userAvatar:userAvatar,
+              userName:userName
             }
 
             insertComment(data).then(res => {
@@ -303,18 +316,16 @@ export default {
               tradePrice: car_information[0].prePrice
             }
             text1.value = "提交中"
-            try{
-              insertOrder(order).then(res => {
-                router.push({name:"Pay", params:{htmlCode:res}});
-              })
-            }
-            catch (e) {
-              dialog1Visible.value = true
-              buycar_button.value = true
-              text1.value = "立即预定"
-              diglog1Text.value = "下单失败"
-            }
-
+            insertOrder(order).then(res => {
+              if (res == "") {
+                text1.value = "已提交"
+                buycar_button.value = true
+              } else {
+                dialog1Visible.value = true
+                text1.value = "我要买车"
+                diglog1Text.value = "提交失败"
+              }
+            })
           }
         }
         else{
@@ -341,7 +352,8 @@ export default {
       diglog1Text,
       dialog2Visible,
       diglog2Text,
-      successbutton
+      successbutton,
+      carImgs_Length,
     }
   },
 }

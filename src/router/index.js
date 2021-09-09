@@ -80,11 +80,6 @@ const routes = [
     path: '/reset',
     name: 'Retrieve',
     component: () => import(/* webpackChunkName: "login" */ '../views/retrieve.vue')
-  },
-  {
-    path: '/pay',
-    name: 'Pay',
-    component: () => import(/* webpackChunkName: "login" */ '../views/pay.vue')
   }
 ]
 
