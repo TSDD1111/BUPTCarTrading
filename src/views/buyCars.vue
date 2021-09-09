@@ -5,8 +5,8 @@
       <el-col :span="4"></el-col>
       <el-col :span="16">
         <el-carousel trigger="click" indicator-position="outside" :interval="5000" height="550px">
-          <el-carousel-item v-for="(i,index) in 3" :key="index">
-            <img @click="clickCar(lampInfo.carId[index])" :src=lampInfo.carSrc[index] class="run-picture">
+          <el-carousel-item v-for="index in 3" :key="index">
+            <img @click="clickCar(lampInfo.carId[index], lampInfo.carSrc[index])" :src=lampInfo.carSrc[index] class="run-picture">
           </el-carousel-item>
         </el-carousel>
       </el-col>
@@ -37,7 +37,7 @@
         <el-tabs @click="selectBrand" v-model="carType">
           <el-tab-pane label="不限" name="不限"></el-tab-pane>
           <template v-for="i in carBrand" :key="i">
-            <el-tab-pane v-if="i != null" :label="i" :name="i"></el-tab-pane>
+            <el-tab-pane :label="i" :name="i"></el-tab-pane>
           </template>
         </el-tabs>
       </el-col>
@@ -68,14 +68,15 @@
       <el-col :span="15">
         <el-tabs @click="selectPrice" v-model="carPrice">
           <el-tab-pane label="不限" name="不限"></el-tab-pane>
-          <el-tab-pane label="2万以下" name="2"></el-tab-pane>
-          <el-tab-pane label="2-5万" name="5"></el-tab-pane>
+          <el-tab-pane label="5万以下" name="5"></el-tab-pane>
           <el-tab-pane label="5-8万" name="8"></el-tab-pane>
           <el-tab-pane label="8-11万" name="11"></el-tab-pane>
           <el-tab-pane label="11-14万" name="14"></el-tab-pane>
           <el-tab-pane label="14-17万" name="17"></el-tab-pane>
           <el-tab-pane label="17-20万" name="20"></el-tab-pane>
-          <el-tab-pane label="20万以上" name="23"></el-tab-pane>
+          <el-tab-pane label="20-50万" name="50"></el-tab-pane>
+          <el-tab-pane label="50-100万" name="100"></el-tab-pane>
+          <el-tab-pane label="100万以上" name="300"></el-tab-pane>
         </el-tabs>
       </el-col>
       <el-col :span="4"></el-col>
@@ -140,7 +141,6 @@
 import router from "../router/index.js";
 import {ref, reactive} from 'vue';
 import {getCarBrand, getCarSort, getCarPage, getBanner} from '../http/api.js'     //获取api
-
 export default {
   name: 'Buy',
   setup(){
@@ -157,27 +157,21 @@ export default {
     })
     let carType = ref('不限')   //车品牌
     let search = ref("")    //搜索栏
-    let carBrand = reactive([])  //车品牌数组
+    let carBrand = reactive({})  //车品牌数组
     let carOrder = ref("不限")
     //获取所有的车品牌
     getCarBrand().then(res=>{
       for(let i = 0; i < res.length; i++){
         carBrand[i] = res[i];
       }
-      for(let i = res.length; i < 20; i++){
-        carBrand[i] = null;
-      }
     })
     let carSort = ref('不限')    //对应车品牌的车种类
     let carPrice = ref('不限')   //车价格
     //获取初始的车种类的数组
-    let carList = reactive([])
+    let carList = reactive({})
     getCarSort("奔驰").then(res=>{
       for(let i = 0; i < res.length; i++){
         carList[i] = res[i].carSeries;
-      }
-      for(let i = res.length; i < 20; i++){
-        carList[i] = null;
       }
     })
     //20辆车的信息数组
@@ -205,8 +199,8 @@ export default {
       for(let i = 0; i < res.list.length; i++){
         carInfo.carName[i] = res.list[i].name;
         carInfo.carId[i] = res.list[i].carId;
-        carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-        carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+        carInfo.carPrice[i] = res.list[i].prePrice + "万";
+        carInfo.carDis[i] = res.list[i].kilometer + "万公里";
         carInfo.service[i] = "到店服务";
         carInfo.carSrc[i] = res.list[i].cover;
         carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年"
@@ -225,8 +219,8 @@ export default {
         for(let i = 0; i < res.list.length; i++){
           carInfo.carName[i] = res.list[i].name;
           carInfo.carId[i] = res.list[i].carId;
-          carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-          carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+          carInfo.carPrice[i] = res.list[i].prePrice + "万";
+          carInfo.carDis[i] = res.list[i].kilometer + "万公里";
           carInfo.service[i] = "到店服务";
           carInfo.carSrc[i] = res.list[i].cover;
           carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";
@@ -245,36 +239,40 @@ export default {
       carPageSearch = {};
       //判断价格
       if(carPrice.value != "不限"){
-        if(carPrice.value == "2"){
+        if(carPrice.value == "5"){
           carPageSearch.priceLower = null;
-          carPageSearch.priceUpper = 20000;
-        }
-        else if(carPrice.value == "5"){
-          carPageSearch.priceLower = 20000;
-          carPageSearch.priceUpper = 50000;
+          carPageSearch.priceUpper = 5;
         }
         else if(carPrice.value == "8"){
-          carPageSearch.priceLower = 50000;
-          carPageSearch.priceUpper = 80000;
+          carPageSearch.priceLower = 5;
+          carPageSearch.priceUpper = 8;
         }
         else if(carPrice.value == "11"){
-          carPageSearch.priceLower = 80000;
-          carPageSearch.priceUpper = 110000;
+          carPageSearch.priceLower = 8;
+          carPageSearch.priceUpper = 11;
         }
         else if(carPrice.value == "14"){
-          carPageSearch.priceLower = 110000;
-          carPageSearch.priceUpper = 140000;
+          carPageSearch.priceLower = 11;
+          carPageSearch.priceUpper = 14;
         }
         else if(carPrice.value == "17"){
-          carPageSearch.priceLower = 140000;
-          carPageSearch.priceUpper = 170000;
+          carPageSearch.priceLower = 14;
+          carPageSearch.priceUpper = 17;
         }
         else if(carPrice.value == "20"){
-          carPageSearch.priceLower = 170000;
-          carPageSearch.priceUpper = 200000;
+          carPageSearch.priceLower = 17;
+          carPageSearch.priceUpper = 20;
         }
-        else if(carPrice.value == "23"){
-          carPageSearch.priceLower = 200000;
+        else if(carPrice.value == "50"){
+          carPageSearch.priceLower = 20;
+          carPageSearch.priceUpper = 50;
+        }
+        else if(carPrice.value == "100"){
+          carPageSearch.priceLower = 50;
+          carPageSearch.priceUpper = 100;
+        }
+        else if(carPrice.value == "300"){
+          carPageSearch.priceLower = 100;
           carPageSearch.priceUpper = null;
         }
       }
@@ -313,8 +311,8 @@ export default {
           for(let i = 0; i < res.length; i++){
             carList[i] = res[i].carSeries;
           }
-          for(let i = res.length; i < 20; i++){
-            carList[i] = null;
+          for(let i = res.length; i < Object.keys(carList).length; i++){
+            carList[i] = null
           }
         })
         carSort.value = "不限";
@@ -325,8 +323,8 @@ export default {
           for(let i = 0; i < res.list.length; i++){
             carInfo.carName[i] = res.list[i].name;
             carInfo.carId[i] = res.list[i].carId;
-            carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-            carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+            carInfo.carPrice[i] = res.list[i].prePrice + "万";
+            carInfo.carDis[i] = res.list[i].kilometer + "万公里";
             carInfo.service[i] = "到店服务";
             carInfo.carSrc[i] = res.list[i].cover;
             carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";
@@ -347,8 +345,8 @@ export default {
           for(let i = 0; i < res.list.length; i++){
             carInfo.carName[i] = res.list[i].name;
             carInfo.carId[i] = res.list[i].carId;
-            carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-            carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+            carInfo.carPrice[i] = res.list[i].prePrice + "万";
+            carInfo.carDis[i] = res.list[i].kilometer + "万公里";
             carInfo.service[i] = "到店服务";
             carInfo.carSrc[i] = res.list[i].cover;
             carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";
@@ -366,36 +364,44 @@ export default {
       carPageSearch = {};
       //判断价格
       if(carPrice.value != "不限"){
-        if(carPrice.value == "2"){
+        if(carPrice.value == "5"){
           carPageSearch.priceLower = null;
-          carPageSearch.priceUpper = 20000;
-        }
-        else if(carPrice.value == "5"){
-          carPageSearch.priceLower = 20000;
-          carPageSearch.priceUpper = 50000;
+          carPageSearch.priceUpper = 5;
         }
         else if(carPrice.value == "8"){
-          carPageSearch.priceLower = 50000;
-          carPageSearch.priceUpper = 80000;
+          carPageSearch.priceLower = 5;
+          carPageSearch.priceUpper = 8;
         }
         else if(carPrice.value == "11"){
-          carPageSearch.priceLower = 80000;
-          carPageSearch.priceUpper = 110000;
+          carPageSearch.priceLower = 8;
+          carPageSearch.priceUpper = 11;
         }
         else if(carPrice.value == "14"){
-          carPageSearch.priceLower = 110000;
-          carPageSearch.priceUpper = 140000;
+          carPageSearch.priceLower = 11;
+          carPageSearch.priceUpper = 14;
         }
         else if(carPrice.value == "17"){
-          carPageSearch.priceLower = 140000;
-          carPageSearch.priceUpper = 170000;
+          carPageSearch.priceLower = 14;
+          carPageSearch.priceUpper = 17;
         }
         else if(carPrice.value == "20"){
-          carPageSearch.priceLower = 170000;
-          carPageSearch.priceUpper = 200000;
+          carPageSearch.priceLower = 17;
+          carPageSearch.priceUpper = 20;
         }
-        else if(carPrice.value == "23"){
-          carPageSearch.priceLower = 200000;
+        else if(carPrice.value == "20"){
+          carPageSearch.priceLower = 17;
+          carPageSearch.priceUpper = 20;
+        }
+        else if(carPrice.value == "50"){
+          carPageSearch.priceLower = 20;
+          carPageSearch.priceUpper = 50;
+        }
+        else if(carPrice.value == "100"){
+          carPageSearch.priceLower = 50;
+          carPageSearch.priceUpper = 100;
+        }
+        else if(carPrice.value == "300"){
+          carPageSearch.priceLower = 100;
           carPageSearch.priceUpper = null;
         }
       }
@@ -443,8 +449,8 @@ export default {
           for(let i = 0; i < res.list.length; i++){
             carInfo.carName[i] = res.list[i].name;
             carInfo.carId[i] = res.list[i].carId;
-            carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-            carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+            carInfo.carPrice[i] = res.list[i].prePrice + "万";
+            carInfo.carDis[i] = res.list[i].kilometer + "万公里";
             carInfo.service[i] = "到店服务";
             carInfo.carSrc[i] = res.list[i].cover;
             carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";
@@ -470,8 +476,8 @@ export default {
           for(let i = 0; i < res.list.length; i++){
             carInfo.carName[i] = res.list[i].name;
             carInfo.carId[i] = res.list[i].carId;
-            carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-            carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+            carInfo.carPrice[i] = res.list[i].prePrice + "万";
+            carInfo.carDis[i] = res.list[i].kilometer + "万公里";
             carInfo.service[i] = "到店服务";
             carInfo.carSrc[i] = res.list[i].cover;
             carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";
@@ -489,36 +495,40 @@ export default {
       carPageSearch = {};
       //判断价格
       if(carPrice.value != "不限"){
-        if(carPrice.value == "2"){
+        if(carPrice.value == "5"){
           carPageSearch.priceLower = null;
-          carPageSearch.priceUpper = 20000;
-        }
-        else if(carPrice.value == "5"){
-          carPageSearch.priceLower = 20000;
-          carPageSearch.priceUpper = 50000;
+          carPageSearch.priceUpper = 5;
         }
         else if(carPrice.value == "8"){
-          carPageSearch.priceLower = 50000;
-          carPageSearch.priceUpper = 80000;
+          carPageSearch.priceLower = 5;
+          carPageSearch.priceUpper = 8;
         }
         else if(carPrice.value == "11"){
-          carPageSearch.priceLower = 80000;
-          carPageSearch.priceUpper = 110000;
+          carPageSearch.priceLower = 8;
+          carPageSearch.priceUpper = 11;
         }
         else if(carPrice.value == "14"){
-          carPageSearch.priceLower = 110000;
-          carPageSearch.priceUpper = 140000;
+          carPageSearch.priceLower = 11;
+          carPageSearch.priceUpper = 14;
         }
         else if(carPrice.value == "17"){
-          carPageSearch.priceLower = 140000;
-          carPageSearch.priceUpper = 170000;
+          carPageSearch.priceLower = 14;
+          carPageSearch.priceUpper = 17;
         }
         else if(carPrice.value == "20"){
-          carPageSearch.priceLower = 170000;
-          carPageSearch.priceUpper = 200000;
+          carPageSearch.priceLower = 17;
+          carPageSearch.priceUpper = 20;
         }
-        else if(carPrice.value == "23"){
-          carPageSearch.priceLower = 200000;
+        else if(carPrice.value == "50"){
+          carPageSearch.priceLower = 20;
+          carPageSearch.priceUpper = 50;
+        }
+        else if(carPrice.value == "100"){
+          carPageSearch.priceLower = 50;
+          carPageSearch.priceUpper = 100;
+        }
+        else if(carPrice.value == "300"){
+          carPageSearch.priceLower = 100;
           carPageSearch.priceUpper = null;
         }
       }
@@ -571,8 +581,8 @@ export default {
         for(let i = 0; i < res.list.length; i++){
           carInfo.carName[i] = res.list[i].name;
           carInfo.carId[i] = res.list[i].carId;
-          carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-          carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+          carInfo.carPrice[i] = res.list[i].prePrice + "万";
+          carInfo.carDis[i] = res.list[i].kilometer + "万公里";
           carInfo.service[i] = "到店服务";
           carInfo.carSrc[i] = res.list[i].cover;
           carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";
@@ -592,36 +602,40 @@ export default {
       carPageSearch = {};
       //判断价格
       if(carPrice.value != "不限"){
-        if(carPrice.value == "2"){
+        if(carPrice.value == "5"){
           carPageSearch.priceLower = null;
-          carPageSearch.priceUpper = 20000;
-        }
-        else if(carPrice.value == "5"){
-          carPageSearch.priceLower = 20000;
-          carPageSearch.priceUpper = 50000;
+          carPageSearch.priceUpper = 5;
         }
         else if(carPrice.value == "8"){
-          carPageSearch.priceLower = 50000;
-          carPageSearch.priceUpper = 80000;
+          carPageSearch.priceLower = 5;
+          carPageSearch.priceUpper = 8;
         }
         else if(carPrice.value == "11"){
-          carPageSearch.priceLower = 80000;
-          carPageSearch.priceUpper = 110000;
+          carPageSearch.priceLower = 8;
+          carPageSearch.priceUpper = 11;
         }
         else if(carPrice.value == "14"){
-          carPageSearch.priceLower = 110000;
-          carPageSearch.priceUpper = 140000;
+          carPageSearch.priceLower = 11;
+          carPageSearch.priceUpper = 14;
         }
         else if(carPrice.value == "17"){
-          carPageSearch.priceLower = 140000;
-          carPageSearch.priceUpper = 170000;
+          carPageSearch.priceLower = 14;
+          carPageSearch.priceUpper = 17;
         }
         else if(carPrice.value == "20"){
-          carPageSearch.priceLower = 170000;
-          carPageSearch.priceUpper = 200000;
+          carPageSearch.priceLower = 17;
+          carPageSearch.priceUpper = 20;
         }
-        else if(carPrice.value == "23"){
-          carPageSearch.priceLower = 200000;
+        else if(carPrice.value == "50"){
+          carPageSearch.priceLower = 20;
+          carPageSearch.priceUpper = 50;
+        }
+        else if(carPrice.value == "100"){
+          carPageSearch.priceLower = 50;
+          carPageSearch.priceUpper = 100;
+        }
+        else if(carPrice.value == "300"){
+          carPageSearch.priceLower = 100;
           carPageSearch.priceUpper = null;
         }
       }
@@ -677,8 +691,8 @@ export default {
         for(let i = 0; i < res.list.length; i++){
           carInfo.carName[i] = res.list[i].name;
           carInfo.carId[i] = res.list[i].carId;
-          carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-          carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+          carInfo.carPrice[i] = res.list[i].prePrice + "万";
+          carInfo.carDis[i] = res.list[i].kilometer + "万公里";
           carInfo.service[i] = "到店服务";
           carInfo.carSrc[i] = res.list[i].cover;
           carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";
@@ -690,8 +704,8 @@ export default {
       })
     }
     //点击某辆车，跳转到对应的车界面
-    let clickCar=(carID)=>{
-      router.push({path: 'carInfo', query:{carId: carID}})
+    let clickCar=(carID, carSrc)=>{
+      router.push({path: 'carInfo', query:{carId: carID, carSrc: carSrc}})
       return
     }
     //改变页码时的变化
@@ -703,8 +717,8 @@ export default {
         for(let i = 0; i < res.list.length; i++){
           carInfo.carName[i] = res.list[i].name;
           carInfo.carId[i] = res.list[i].carId;
-          carInfo.carPrice[i] = res.list[i].prePrice / 10000 + "万";
-          carInfo.carDis[i] = res.list[i].kilometer / 10000 + "万公里";
+          carInfo.carPrice[i] = res.list[i].prePrice + "万";
+          carInfo.carDis[i] = res.list[i].kilometer + "万公里";
           carInfo.service[i] = "到店服务";
           carInfo.carSrc[i] = res.list[i].cover;
           carInfo.carTime[i] = (2021 - res.list[i].regdate.slice(0, 4)) + "年";

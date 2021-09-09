@@ -23,9 +23,6 @@ export default {
     document.forms[0].submit()
 
   },
-  // payHtml(){
-  //   console.log('pay:' + this.document);
-  // },
 
 }
 </script>

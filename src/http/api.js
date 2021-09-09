@@ -73,11 +73,15 @@ export const updateUserInfo=(data)=>{
 }
 //用户获取个人名下出售车的信息
 export const sCarInfo=(data)=>{
-    return $http.get(`/car/trading/getCarByUserId/${data}`)
+    return $http.get(`/car/trading/getCarByUserId?userId=${data.userId}&page=${data.page}`)
 }
 //用户获取买车信息
 export const bCarInfo=(data)=>{
-    return $http.get(`/car/order/getOrderByUserId/${data}`)
+    return $http.get(`/car/order/getOrderByUserId?userId=${data.userId}&page=${data.page}`)
+}
+// 删除未出售的汽车
+export const deleteCarInfo=(data)=> {
+    return $http.delete(`/car/trading/deleteCar/${data}`)
 }
 //获取预测价格
 export const predictPrice =(data)=>{

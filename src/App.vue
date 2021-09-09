@@ -1,4 +1,5 @@
 <template>
+  <meta name="referrer" content="no-referrer" />
   <router-view />
 </template>
 
@@ -11,6 +12,6 @@ export default {
 
 <style lang="scss">
 body{
-  margin: 0px;
+  margin: 0;
 }
 </style>

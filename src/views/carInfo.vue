@@ -8,9 +8,9 @@
   <el-row :gutter="10">
     <el-col :span="12">
       <div class="grid-content bg-purple">
-        <el-carousel trigger="click" indicator-position="outside" :interval="5000" height="400px">
+        <el-carousel trigger="click" indicator-position="outside" :interval="5000" height="450px">
           <el-carousel-item v-for="(i,index) in carImgs.length" :key="index">
-            <img :src=carImgs[index]  :class="carPicture">
+            <img :src=carImgs[index]  class="carPicture">
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -43,7 +43,7 @@
                 label="价格">
             </el-table-column>
           </el-table>
-          <button class="buycar" @click="buyCar"  >{{text1}}</button>
+          <button class="buy-car" @click="buyCar"  >{{text1}}</button>
           <el-dialog
               title="提示"
               v-model="dialog1Visible"
@@ -185,9 +185,10 @@ export default {
       sellerId: null,
     }])
     let carImgs = reactive([])
+    carImgs.push(router.currentRoute.value.query.carSrc)
     let carImgs_Length = ref(1)
     let input_comment = ref(null)
-    let text1 = ref("我要买车")
+    let text1 = ref("立即预约")
     let buycar_button = ref(false)
     let submitcomment_button = ref(false)
     let carid = router.currentRoute.value.query.carId
@@ -204,6 +205,7 @@ export default {
 
     getCarInfo(carid).then(res=>{
       carImgs_Length.value = res.carImages.length;
+      carImgs.pop()
       for(let i = 0;i<res.carImages.length;i++){
         carImgs.push(res.carImages[i]);
       }
@@ -316,16 +318,17 @@ export default {
               tradePrice: car_information[0].prePrice
             }
             text1.value = "提交中"
-            insertOrder(order).then(res => {
-              if (res == "") {
-                text1.value = "已提交"
-                buycar_button.value = true
-              } else {
-                dialog1Visible.value = true
-                text1.value = "我要买车"
-                diglog1Text.value = "提交失败"
-              }
-            })
+            try{
+              insertOrder(order).then(res => {
+                router.push({name:"Pay", params:{htmlCode:res}});
+              })
+            }
+            catch (e) {
+              dialog1Visible.value = true
+              buycar_button.value = true
+              text1.value = "立即预定"
+              diglog1Text.value = "下单失败"
+            }
           }
         }
         else{
@@ -360,23 +363,26 @@ export default {
 </script>
 <style>
 .carPicture{
-  width: 600px;
-  height: 400px;
+  width: 730px;
+  height: 450px;
 }
 .baseinfo{
   float: left;
 }
-.buycar{
+.buy-car{
   background-color: #f44336;
   border: #f44336;
   font-size: 24px;
   padding: 10px 32px;
   color: white;
   position: relative;
-  left: 10px;
+  margin-left: 250px;
+  margin-top: 100px;
 }
-.buycar:hover{
+.buy-car:hover{
   background-color: crimson;
+  margin-left: 250px;
+  margin-top: 100px;
 }
 .comment-block {
   padding: 1rem;
