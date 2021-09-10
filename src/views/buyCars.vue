@@ -5,7 +5,7 @@
       <el-col :span="4"></el-col>
       <el-col :span="16">
         <el-carousel trigger="click" indicator-position="outside" :interval="5000" height="550px">
-          <el-carousel-item v-for="index in 3" :key="index">
+          <el-carousel-item v-for="(x, index) in 3" :key="x">
             <img @click="clickCar(lampInfo.carId[index], lampInfo.carSrc[index])" :src=lampInfo.carSrc[index] class="run-picture">
           </el-carousel-item>
         </el-carousel>
@@ -102,7 +102,7 @@
     </el-row>
     <!--车的图片、信息展示-->
     <el-row :gutter="10">
-      <el-col :span="6" v-for="(y,index) in 20" :key="y" v-model="carInfo">
+      <el-col :span="6" v-for="(y, index) in 20" :key="y" v-model="carInfo">
         <el-card @click="clickCar(carInfo.carId[index])" v-if="carInfo.carName[index] != null" :body-style="{ padding: '0px' }" shadow="hover" class="carMarTop">
           <img :src=carInfo.carSrc[index] class="picture">
           <div style="margin-left: 14px">

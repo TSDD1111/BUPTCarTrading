@@ -31,7 +31,7 @@
             </el-table-column>
             <el-table-column
                 prop="kilometer"
-                label="里程"
+                label="里程(万公里)"
                 width="180">
             </el-table-column>
             <el-table-column
@@ -40,7 +40,7 @@
             </el-table-column>
             <el-table-column
                 prop="prePrice"
-                label="价格">
+                label="价格(万)">
             </el-table-column>
           </el-table>
           <button class="buy-car" @click="buyCar"  >{{text1}}</button>
@@ -77,7 +77,7 @@
           </el-table-column>
           <el-table-column
               prop="kilometer"
-              label="里程"
+              label="里程(万公里)"
               width="180">
           </el-table-column>
           <el-table-column
@@ -319,10 +319,21 @@ export default {
             text1.value = "提交中"
             try{
               insertOrder(order).then(res => {
-                router.push({name:"Pay", params:{htmlCode:res}});
+                if(res==""){
+                  dialog1Visible.value = true
+                  diglog1Text.value = "请先登录"
+                }
+                else if(res=="该车已被购买"){
+                  dialog1Visible.value = true
+                  diglog1Text.value = "该车已被购买"
+                }
+                else{
+                  router.push({name:"Pay", params:{htmlCode:res}});
+                }
               })
             }
             catch (e) {
+              console.log(e)
               dialog1Visible.value = true
               buycar_button.value = true
               text1.value = "立即预定"

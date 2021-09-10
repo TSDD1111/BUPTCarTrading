@@ -13,20 +13,20 @@
               v-model="form.regdate"
               type="date"
               placeholder="Pick a date"
-              :default-value="new Date(2010, 9, 1)"
+              :default-value="date"
               :disabled-date="disableTime"
           >
           </el-date-picker>
         </el-form-item>
 
         <el-form-item label="车系" :label-width="formLabelWidth">
-          <el-select v-model="form.name">
-            <el-option v-for="i in carinfo[0]" :key="i" :label="i.carSeries" :value="i.carSeries" @click="requestCarModels(i)"></el-option>
+          <el-select v-model="form.typeId">
+            <el-option v-for="i in carinfo[0]" :key="i" :label="i.carSeries" :value="i.typeId" @click="requestCarModels(i)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="型号" :label-width="formLabelWidth" >
-          <el-select v-model="form.model" style="width: 400px">
-            <el-option v-for="i in carModel[0]" :key="i" :label="i.name" :value="i.name" @click="updateForm(i)"></el-option>
+          <el-select v-model="form.modelId" style="width: 400px">
+            <el-option v-for="i in carModel[0]" :key="i" :label="i.name" :value="i.id" @click="updateForm(i)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否有未维修的损坏" :label-width="formLabelWidth">
@@ -53,7 +53,8 @@
     ]">
           <el-input type="carDescribe" v-model.number="form.carDescribe" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="车辆图片" :label-width="formLabelWidth">
+        <el-form-item label="车辆图片" :label-width="formLabelWidth" prop="images" :rules="[
+      { required: true, message: '图片不能为空'}, { type: 'string'}]">
           <el-upload
               class="upload-demo"
               action="http://8.140.2.249//car/oss/uploadFile"
@@ -93,6 +94,18 @@
     </span>
       </template>
     </el-dialog>
+    <el-dialog
+        title="提示"
+        v-model="diglogVisible_Input"
+        width="30%"
+        :before-close="handleClose">
+      <span>{{diglogText_Input}}</span>
+      <template #footer>
+    <span class="dialog-footer">
+      <el-button type="primary" @click="diglogVisible_Input = false" >确 定</el-button>
+    </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -122,8 +135,8 @@ export default {
       regdate:null,
       region:"北京",
       sellerId:1,
-      typeid:null,
-      modelid:null
+      typeId:null,
+      modelId:null
     })
     let carbrands = reactive([])
     let carnames = reactive([])
@@ -134,6 +147,9 @@ export default {
     let submit_button_load = ref(false)
     let predict_button_load = ref(false)
     let predict_price = ref(null)
+    let date = Date.now()
+    let diglogVisible_Input = ref(false)
+    let diglogText_Input = ref(null)
 
 
     getCarBrand().then(
@@ -150,13 +166,13 @@ export default {
         }else{
           form.sellerId = res.userId
         }
+        if(form.sellerId==null) {
+          diglogVisible.value = true
+          diglogText.value = "请先登录"
+        }else{
+          dialogTableVisible.value = true
+        }
       })
-      if(form.sellerId==null) {
-        diglogVisible.value = true
-        diglogText.value = "请先登录"
-      }else{
-        dialogTableVisible.value = true
-      }
     }
     function disableTime(time){
       return time.getTime() > Date.now();
@@ -174,7 +190,7 @@ export default {
       {
         let predict = {
           kilometer: form.kilometer,
-          modelId: form.modelid,
+          modelId: form.modelId,
           notrepaireddamage: form.isnotrepair,
           regdate:form.regdate
         }
@@ -186,7 +202,7 @@ export default {
         })
       }
       else {
-        predict_price.value = "输入信息不全"
+        predict_price.value = "需输入里程，型号，日期，是否维修"
       }
     }
     function submitForm() {
@@ -199,10 +215,9 @@ export default {
           &&form.brand!=""
           &&form.isnotrepair!=null
           &&form.name!=""
-          &&form.carDescribe!=null
+          &&form.images!=null
           &&form.price!=null
           &&form.regdate!=null
-          &&form.images!=null
       )
       {
         insertCar(form).then(res=>{
@@ -213,11 +228,17 @@ export default {
           }
         })
       }
+      //输入信息不全时提示
+      else{
+        console.log(1)
+        diglogVisible_Input.value = true
+        diglogText_Input.value = "输入信息不全"
+      }
     }
 
     function updateForm(i){
-      form.model = i.name
-      form.modelid = i.id
+      form.name = i.name
+      form.modelId = i.id
       form.power = "1.5L"
     }
 
@@ -265,7 +286,10 @@ export default {
       predict,
       predict_button_load,
       predict_price,
-      disableTime
+      disableTime,
+      date,
+      diglogVisible_Input,
+      diglogText_Input
     }
   },
 }
