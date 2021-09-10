@@ -248,7 +248,6 @@ export default {
         var a = i.toString()
         carcomments.push({userName:res[a].userName,comment:res[a].commentDetails,userAvatar:res[a].userAvatar})
       }
-      console.log(carcomments)
     })
     let flash=()=>{
       dialog2Visible = false
